@@ -1,0 +1,63 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
+import { CreatePageDto } from './dto/create-page.dto';
+import { Page } from './page.entity';
+import { PageRepository } from './page.repository';
+import {
+  OutputPage,
+  parsePageForMinOutput,
+  parsePageForOutput,
+} from './serializers/page.serializer';
+
+@Injectable()
+export class PageService {
+  constructor(
+    @InjectRepository(PageRepository) private pageRepository: PageRepository,
+  ) {}
+
+  async createPage(createPageDto: CreatePageDto, owner: User): Promise<string> {
+    const page = await this.pageRepository.createPage(createPageDto, owner);
+    return page.id;
+  }
+
+  async deletePage(page: Page): Promise<void> {
+    await this.pageRepository.delete({ id: page.id });
+  }
+
+  async getUserAssociatedPages(user: User): Promise<Page[]> {
+    const associatedPages = await this.pageRepository
+      .createQueryBuilder('page')
+      .leftJoinAndSelect('page.notebooks', 'notebooks')
+      .leftJoinAndSelect('page.members', 'member')
+      .leftJoinAndSelect('page.owner', 'owner')
+      .where('member.id = :memberId', { memberId: user.id })
+      .orWhere('owner.id = :ownerId', { ownerId: user.id })
+      .orderBy('page."updatedAt"', 'DESC')
+      .getMany();
+
+    return associatedPages;
+  }
+
+  async getAllUserPages(user: User): Promise<OutputPage[]> {
+    const associatedPages = await this.getUserAssociatedPages(user);
+    return associatedPages.map((page) => ({
+      ...parsePageForOutput(page),
+    }));
+  }
+
+  async getAllUserPagesForSidebar(user: User) {
+    const associatedPages = await this.getUserAssociatedPages(user);
+    return associatedPages.map((page) => parsePageForMinOutput(page));
+  }
+
+  async getSinglePage(pageId: string): Promise<Page> {
+    const page = await this.pageRepository.getPageWithOwnerData(pageId);
+
+    if (!page) {
+      throw new NotFoundException(`Page with id ${pageId} does not exist`);
+    }
+
+    return page;
+  }
+}
