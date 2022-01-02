@@ -7,7 +7,8 @@ export interface OutputPage {
   id: string;
   title: string;
   type: string;
-  createdAt: Date;
+  updatedAt: Date;
+  isPrivate: boolean;
   members: {
     id: string;
     username: string;
@@ -39,7 +40,8 @@ export const parsePageForOutput = (page: Page): OutputPage => {
     id: page.id,
     title: page.title,
     type: page.type,
-    createdAt: page.createdAt,
+    updatedAt: page.updatedAt,
+    isPrivate: page.private,
     members,
     owner: {
       id: page.owner.id,
