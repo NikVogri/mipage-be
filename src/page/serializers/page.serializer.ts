@@ -30,11 +30,13 @@ export interface MinOutPutPage {
 }
 
 export const parsePageForOutput = (page: Page): OutputPage => {
-  const members = page.members.slice(0, 3).map((member) => ({
-    id: member.id,
-    avatar: member.avatar,
-    username: member.username,
-  }));
+  const members = page.members
+    ? page.members.slice(0, 3).map((member) => ({
+        id: member.id,
+        avatar: member.avatar,
+        username: member.username,
+      }))
+    : [];
 
   return {
     id: page.id,

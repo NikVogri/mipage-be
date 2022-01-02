@@ -16,9 +16,12 @@ export class PageService {
     @InjectRepository(PageRepository) private pageRepository: PageRepository,
   ) {}
 
-  async createPage(createPageDto: CreatePageDto, owner: User): Promise<string> {
+  async createPage(
+    createPageDto: CreatePageDto,
+    owner: User,
+  ): Promise<{ id: string }> {
     const page = await this.pageRepository.createPage(createPageDto, owner);
-    return page.id;
+    return parsePageForOutput(page);
   }
 
   async deletePage(page: Page): Promise<void> {
