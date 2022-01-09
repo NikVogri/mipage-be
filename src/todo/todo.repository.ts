@@ -9,7 +9,7 @@ import { Todo } from './todo.entity';
 export class TodoRepository extends Repository<Todo> {
   async createTodo(page: Page, createTodoDto: CreateTodoDto): Promise<Todo> {
     const { title, color } = createTodoDto;
-    const todo = this.create({ title, color, page });
+    const todo = this.create({ title, color, page, items: [] });
 
     await this.save(todo);
 
