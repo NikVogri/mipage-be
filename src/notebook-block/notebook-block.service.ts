@@ -49,7 +49,7 @@ export class NotebookBlockService {
     notebookBlock: NotebookBlock,
     updateNotebookBlockDto: UpdateNotebookBlockDto,
   ) {
-    await this.notebookBlockRepository.updateNotebookBlock(
+    return await this.notebookBlockRepository.updateNotebookBlock(
       notebookBlock,
       updateNotebookBlockDto,
     );

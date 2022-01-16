@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { NotebookBlockService } from 'src/notebook-block/notebook-block.service';
 import { GetPage } from 'src/page/get-page.decorator';
 import { PageRolesGuard } from 'src/page/guards/page-roles.guard';
 import { Page } from 'src/page/page.entity';
@@ -12,19 +13,22 @@ import { NotebookService } from './notebook.service';
 
 @Controller({ path: '/pages/:pageId/notebooks' })
 export class NotebookController {
-  constructor(private notebookService: NotebookService) {}
+  constructor(
+    private notebookService: NotebookService,
+    private notebookBlockService: NotebookBlockService,
+  ) {}
 
   @Get()
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  getPageTodos(@GetPage() page: Page) {
+  getPageNotebooks(@GetPage() page: Page) {
     return this.notebookService.getAllPageNotebooks(page);
   }
 
   @Post()
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  createTodo(
+  createNotebook(
     @GetPage() page: Page,
     @Body() createNotebookDto: CreateNotebookDto,
   ) {
@@ -34,10 +38,24 @@ export class NotebookController {
   @Patch('/:notebookId')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  updateTodo(
+  updateNotebook(
     @GetNotebook() notebook: Notebook,
     @Body() updateNotebookDto: UpdateNotebookDto,
   ) {
     return this.notebookService.updateNotebook(notebook, updateNotebookDto);
+  }
+
+  @Get('/:notebookId')
+  @Roles('owner', 'member')
+  @UseGuards(JwtAuthGuard, PageRolesGuard)
+  async getSingleNotebook(@GetNotebook() notebook: Notebook) {
+    const notebookBlocks = await this.notebookBlockService.getAllNotebookBlocks(
+      notebook,
+    );
+
+    return {
+      ...notebook,
+      blocks: notebookBlocks,
+    };
   }
 }
