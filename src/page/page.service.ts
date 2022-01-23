@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotebookService } from 'src/notebook/notebook.service';
 import { User } from 'src/user/user.entity';
 import { CreatePageDto } from './dto/create-page.dto';
-import { Page } from './page.entity';
+import { Page, PageType } from './page.entity';
 import { PageRepository } from './page.repository';
 import {
   OutputPage,
@@ -14,6 +15,7 @@ import {
 export class PageService {
   constructor(
     @InjectRepository(PageRepository) private pageRepository: PageRepository,
+    private notebookService: NotebookService,
   ) {}
 
   async createPage(
@@ -21,6 +23,16 @@ export class PageService {
     owner: User,
   ): Promise<{ id: string }> {
     const page = await this.pageRepository.createPage(createPageDto, owner);
+
+    // Also create a first notebook block
+    if (page.type === PageType.notebook) {
+      const notebook = await this.notebookService.createNotebook(page, {
+        title: 'Page #1',
+      });
+
+      page.notebooks = [notebook];
+    }
+
     return parsePageForOutput(page);
   }
 

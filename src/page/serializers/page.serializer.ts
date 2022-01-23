@@ -9,6 +9,10 @@ export interface OutputPage {
   type: string;
   updatedAt: Date;
   isPrivate: boolean;
+  notebooks: {
+    id: string;
+    title: string;
+  }[];
   members: {
     id: string;
     username: string;
@@ -38,12 +42,20 @@ export const parsePageForOutput = (page: Page): OutputPage => {
       }))
     : [];
 
+  const notebooks = page.notebooks
+    ? page.notebooks.map((nb) => ({
+        id: nb.id,
+        title: nb.title,
+      }))
+    : [];
+
   return {
     id: page.id,
     title: page.title,
     type: page.type,
     updatedAt: page.updatedAt,
     isPrivate: page.private,
+    notebooks,
     members,
     owner: {
       id: page.owner.id,
