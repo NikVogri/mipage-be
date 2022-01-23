@@ -14,8 +14,8 @@ export class NotebookBlockRepository extends Repository<NotebookBlock> {
     notebook: Notebook,
     createNotebookBlockDto: CreateNotebookBlockDto,
   ): Promise<NotebookBlock> {
-    const { content, type } = createNotebookBlockDto;
-    const notebookBlock = this.create({ content, type, notebook });
+    const { type } = createNotebookBlockDto;
+    const notebookBlock = this.create({ content: '', type, notebook });
 
     await this.save(notebookBlock);
     delete notebookBlock.notebook;
