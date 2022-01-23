@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FindMemberMiddleware } from 'src/middleware/get-member.middleware';
 import { NotificationRepository } from 'src/notification/notification.repository';
 import { NotificationService } from 'src/notification/notification.service';
+import { PagesModule } from 'src/page/page.module';
 import { PageRepository } from 'src/page/page.repository';
-import { PageService } from 'src/page/page.service';
 import { UserRespository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
 import { MemberController } from './member.controller';
@@ -14,11 +14,12 @@ import { MemberService } from './member.service';
   imports: [
     TypeOrmModule.forFeature([
       UserRespository,
-      PageRepository,
       NotificationRepository,
+      PageRepository,
     ]),
+    PagesModule,
   ],
-  providers: [MemberService, PageService, NotificationService, UserService],
+  providers: [MemberService, NotificationService, UserService],
   controllers: [MemberController],
 })
 export class MemberModule {
