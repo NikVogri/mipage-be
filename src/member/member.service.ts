@@ -7,7 +7,6 @@ import { PageRepository } from 'src/page/page.repository';
 import { User } from 'src/user/user.entity';
 import { UserRespository } from 'src/user/user.repository';
 import { InviteToPageDto } from './dto/invite-to-page.dto';
-import { RemoveFromPageDto } from './dto/remove-to-page.dto';
 
 @Injectable()
 export class MemberService {
@@ -39,6 +38,8 @@ export class MemberService {
       title: "You've been added to a page",
       body: `You have been added to the page: ${page.title}`,
     });
+
+    return page.members;
   }
 
   async removeUserFromPage(page: Page, member: User) {
@@ -58,6 +59,8 @@ export class MemberService {
       title: "You've been removed from a page",
       body: `You have been removed from the page: ${page.title}`,
     });
+
+    return page.members;
   }
 
   async getPageMembers(page: Page) {
