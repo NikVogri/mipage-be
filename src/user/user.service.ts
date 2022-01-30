@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UserRespository } from './user.repository';
@@ -17,5 +21,13 @@ export class UserService {
     }
 
     return user;
+  };
+
+  getUsersWithQuery = (query: string): Promise<User[]> => {
+    if (!query) {
+      throw new BadRequestException("Query can't be empty");
+    }
+
+    return this.userRepository.getUsersWithQuery(query);
   };
 }

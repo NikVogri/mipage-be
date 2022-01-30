@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Like, QueryBuilder, Repository } from 'typeorm';
 import { AuthRegisterCredentialsDto } from '../auth/dto/auth-register-credentials.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
@@ -44,5 +44,14 @@ export class UserRespository extends Repository<User> {
     );
 
     return user;
+  }
+
+  async getUsersWithQuery(query: string): Promise<User[]> {
+    const users = await this.createQueryBuilder('user')
+      .where('user.username LIKE :query', { query: `%${query}%` })
+      .orWhere('user.email LIKE :query', { query: `%${query}%` })
+      .getMany();
+
+    return users;
   }
 }
