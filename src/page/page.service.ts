@@ -27,7 +27,7 @@ export class PageService {
     // Also create a first notebook block
     if (page.type === PageType.notebook) {
       const notebook = await this.notebookService.createNotebook(page, {
-        title: 'Page #1',
+        title: 'My notebook #1',
       });
 
       page.notebooks = [notebook];
