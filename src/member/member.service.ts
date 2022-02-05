@@ -34,9 +34,10 @@ export class MemberService {
 
     await this.pageRepository.addMember(page, user);
     await this.notificationService.createNotification(user, {
-      type: NotificationType.INFO,
+      type: NotificationType.ADDED_TO_PAGE,
       title: "You've been added to a page",
       body: `You have been added to the page: ${page.title}`,
+      additionalData: { pageId: page.id },
     });
 
     return page.members;
@@ -55,9 +56,10 @@ export class MemberService {
 
     await this.pageRepository.save(page);
     await this.notificationService.createNotification(member, {
-      type: NotificationType.INFO,
+      type: NotificationType.REMOVED_FROM_PAGE,
       title: "You've been removed from a page",
       body: `You have been removed from the page: ${page.title}`,
+      additionalData: { pageId: page.id },
     });
 
     return page.members;

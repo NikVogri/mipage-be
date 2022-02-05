@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsObject, IsString } from 'class-validator';
 import { NotificationType } from '../notification.entity';
 
 export class CreateNotificationDto {
@@ -10,4 +10,7 @@ export class CreateNotificationDto {
 
   @IsEnum(NotificationType)
   type: NotificationType;
+
+  @IsObject({ always: false })
+  additionalData?: object;
 }

@@ -8,7 +8,8 @@ import {
 } from 'typeorm';
 
 export enum NotificationType {
-  INFO = 'info',
+  ADDED_TO_PAGE = 'ADDED_TO_PAGE',
+  REMOVED_FROM_PAGE = 'REMOVED_FROM_PAGE',
 }
 
 @Entity()
@@ -39,6 +40,9 @@ export class Notification {
 
   @Column()
   userId: string;
+
+  @Column('jsonb', { nullable: true })
+  additionalData: object;
 
   @ManyToOne(() => User, (user) => user.notifications)
   user: User;
