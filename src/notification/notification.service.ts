@@ -38,8 +38,6 @@ export class NotificationService {
       },
     );
 
-    console.log('here', notification);
-
     if (!notification) {
       throw new BadRequestException(
         `Notification with the id ${notificationId} was not found`,
