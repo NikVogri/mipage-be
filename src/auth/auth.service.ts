@@ -6,6 +6,7 @@ import { UserRespository } from '../user/user.repository';
 import { Jwt } from 'src/models';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +20,9 @@ export class AuthService {
     return this.userRepository.createUser(AuthRegisterCredentialsDto);
   }
 
-  async login(
+  async validateUser(
     authLoginCredentialsDto: AuthLoginCredentialsDto,
-  ): Promise<string> {
+  ): Promise<User> {
     const { email, password } = authLoginCredentialsDto;
     const user = await this.userRepository.getAllUserDataByEmail(email);
 
@@ -33,6 +34,12 @@ export class AuthService {
     if (!passwordMatch) {
       throw new BadRequestException('Invalid login credentials provided');
     }
+
+    return user;
+  }
+
+  async token(authLoginCredentialsDto: AuthLoginCredentialsDto) {
+    const user = await this.validateUser(authLoginCredentialsDto);
 
     const jwtPayload: Jwt = {
       id: user.id,
