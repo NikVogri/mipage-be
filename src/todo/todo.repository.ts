@@ -38,10 +38,15 @@ export class TodoRepository extends Repository<Todo> {
   }
 
   async getAllPageTodosWithItems(page: Page): Promise<Todo[]> {
-    return this.find({
-      where: { page },
-      relations: ['items'],
-      order: { createdAt: 'DESC' },
-    });
+    return this.createQueryBuilder('todo')
+      .leftJoinAndSelect('todo.items', 'items')
+      .where('todo.pageId = :pageId', {
+        pageId: page.id,
+      })
+      .orderBy({
+        'todo.createdAt': 'ASC',
+        'items.createdAt': 'ASC',
+      })
+      .getMany();
   }
 }
