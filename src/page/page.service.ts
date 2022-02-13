@@ -41,17 +41,7 @@ export class PageService {
   }
 
   async getUserAssociatedPages(user: User): Promise<Page[]> {
-    const associatedPages = await this.pageRepository
-      .createQueryBuilder('page')
-      .leftJoinAndSelect('page.notebooks', 'notebooks')
-      .leftJoinAndSelect('page.members', 'member')
-      .leftJoinAndSelect('page.owner', 'owner')
-      .where('member.id = :memberId', { memberId: user.id })
-      .orWhere('owner.id = :ownerId', { ownerId: user.id })
-      .orderBy('page."updatedAt"', 'DESC')
-      .getMany();
-
-    return associatedPages;
+    return this.pageRepository.getUserAssociatedPages(user);
   }
 
   async getAllUserPages(user: User): Promise<OutputPage[]> {

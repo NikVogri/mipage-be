@@ -31,4 +31,15 @@ export class PageRepository extends Repository<Page> {
 
     return page;
   }
+
+  async getUserAssociatedPages(user: User): Promise<Page[]> {
+    return await this.createQueryBuilder('page')
+      .leftJoinAndSelect('page.notebooks', 'notebooks')
+      .leftJoinAndSelect('page.members', 'member')
+      .leftJoinAndSelect('page.owner', 'owner')
+      .where('member.id = :memberId', { memberId: user.id })
+      .orWhere('owner.id = :ownerId', { ownerId: user.id })
+      .orderBy('page."updatedAt"', 'DESC')
+      .getMany();
+  }
 }
