@@ -50,8 +50,7 @@ export class UserRespository extends Repository<User> {
 
   async getUsersWithQuery(query: string): Promise<User[]> {
     const users = await this.createQueryBuilder('user')
-      .where('user.username LIKE :query', { query: `%${query}%` })
-      .orWhere('user.email LIKE :query', { query: `%${query}%` })
+      .where('LOWER(user.username) LIKE LOWER(:query)', { query: `%${query}%` })
       .getMany();
 
     return users;
