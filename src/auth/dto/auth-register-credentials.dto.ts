@@ -4,6 +4,7 @@ export class AuthRegisterCredentialsDto {
   email: string;
 
   @IsString()
+  @MinLength(5)
   username: string;
 
   @MinLength(8)

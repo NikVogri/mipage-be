@@ -1,5 +1,6 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -18,5 +19,14 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   searchForUsers(@Query('q') query: string) {
     return this.userService.getUsersWithQuery(query);
+  }
+
+  @Post('/me/personal-info')
+  @UseGuards(JwtAuthGuard)
+  updatePersonalInfo(
+    @GetUser() user: User,
+    @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
+  ) {
+    return this.userService.updatePersonalInfo(user, updatePersonalInfoDto);
   }
 }

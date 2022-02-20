@@ -1,4 +1,5 @@
-import { EntityRepository, Like, QueryBuilder, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
+import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { AuthRegisterCredentialsDto } from '../auth/dto/auth-register-credentials.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
@@ -37,6 +38,7 @@ export class UserRespository extends Repository<User> {
           'email',
           'password',
           'avatar',
+          'bio',
           'createdAt',
           'updatedAt',
         ],
@@ -53,5 +55,18 @@ export class UserRespository extends Repository<User> {
       .getMany();
 
     return users;
+  }
+
+  async updatePersonalInfo(
+    user: User,
+    updatePersonalInfoDto: UpdatePersonalInfoDto,
+  ) {
+    const { username, bio } = updatePersonalInfoDto;
+
+    return await this.save({
+      id: user.id,
+      bio: bio,
+      username: username,
+    });
   }
 }

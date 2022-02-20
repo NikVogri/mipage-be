@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { User } from './user.entity';
 import { UserRespository } from './user.repository';
 
@@ -29,5 +30,12 @@ export class UserService {
     }
 
     return this.userRepository.getUsersWithQuery(query);
+  };
+
+  updatePersonalInfo = (
+    user: User,
+    updatePersonalInfoDto: UpdatePersonalInfoDto,
+  ) => {
+    return this.userRepository.updatePersonalInfo(user, updatePersonalInfoDto);
   };
 }
