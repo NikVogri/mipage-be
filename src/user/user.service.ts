@@ -14,8 +14,8 @@ export class UserService {
     @InjectRepository(UserRespository) private userRepository: UserRespository,
   ) {}
 
-  getSingleUser = (userId: string): Promise<User> => {
-    const user = this.userRepository.findOne(userId);
+  getSingleUser = async (userId: string): Promise<User> => {
+    const user = await this.userRepository.findOne(userId);
 
     if (!user) {
       throw new NotFoundException(`User with id ${userId} does not exist`);
@@ -37,5 +37,10 @@ export class UserService {
     updatePersonalInfoDto: UpdatePersonalInfoDto,
   ) => {
     return this.userRepository.updatePersonalInfo(user, updatePersonalInfoDto);
+  };
+
+  deleteUser = (user: User) => {
+    // TODO: send email
+    return this.userRepository.delete({ id: user.id });
   };
 }

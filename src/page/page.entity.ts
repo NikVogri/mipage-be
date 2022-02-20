@@ -38,7 +38,7 @@ export class Page {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.ownedPages)
+  @ManyToOne(() => User, (user) => user.ownedPages, { onDelete: 'CASCADE' })
   owner: User;
 
   @OneToMany(() => Todo, (todo) => todo.page)

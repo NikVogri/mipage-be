@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { GetUser } from './get-user.decorator';
@@ -28,5 +38,18 @@ export class UserController {
     @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
   ) {
     return this.userService.updatePersonalInfo(user, updatePersonalInfoDto);
+  }
+
+  @Delete('/me')
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@GetUser() user: User, @Res() response: Response) {
+    await this.userService.deleteUser(user);
+
+    response
+      .cookie('mipage-auth', null, {
+        expires: new Date(Date.now() - 3600), // set expire to date in the past
+      })
+      .status(200)
+      .send({ success: true });
   }
 }
