@@ -30,7 +30,7 @@ export class AuthController {
     response
       .cookie('mipage-auth', token, {
         httpOnly: true,
-        domain: isProd ? this.configService.get('URL_ORIGIN') : undefined,
+        domain: isProd ? this.configService.get('api.mipage.me') : undefined,
         expires: new Date(Date.now() + 86400000),
         secure: isProd,
         sameSite: isProd ? 'strict' : 'lax',
