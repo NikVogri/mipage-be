@@ -1,3 +1,4 @@
+import { User } from 'src/user/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -18,6 +19,9 @@ export class TodoItem {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  description: string;
+
   @Column()
   todoId: string;
 
@@ -29,4 +33,7 @@ export class TodoItem {
 
   @ManyToOne(() => Todo, (todo) => todo.items, { onDelete: 'CASCADE' })
   todo: Todo;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
+  creator: User;
 }

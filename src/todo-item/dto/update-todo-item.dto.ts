@@ -1,9 +1,11 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateTodoItemDto {
-  @IsString()
+  @IsString({ message: 'description should be of type string' })
+  @IsOptional()
   title: string;
 
-  @IsBoolean()
-  completed: boolean;
+  @IsString({ message: 'description should be of type string' }) // TODO: create XSS validator
+  @IsOptional()
+  description: string;
 }
