@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Patch,
   Post,
   UseGuards,
@@ -16,6 +17,9 @@ import { UpdateTodoItemDto } from './dto/update-todo-item.dto';
 import { GetTodoItem } from './get-todo-item.decorator';
 import { TodoItemService } from './todo-item.service';
 import { Roles } from 'src/page/roles.decorator';
+import { GetUser } from 'src/user/get-user.decorator';
+import { User } from 'src/user/user.entity';
+import { parseTodoItemForOutput } from './serializers/todo-item.serializer';
 
 @Controller('/pages/:pageId/todos/:todoId/todo-items')
 export class TodoItemController {
@@ -25,11 +29,30 @@ export class TodoItemController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async createTodoItem(
+    @GetUser() creator: User,
     @GetTodo() todo: Todo,
     @Body()
     createTodoItemDto: CreateTodoItemDto,
   ) {
-    return await this.todoItemService.createTodoItem(todo, createTodoItemDto);
+    return await this.todoItemService.createTodoItem(
+      todo,
+      creator,
+      createTodoItemDto,
+    );
+  }
+
+  @Get('/:todoItemId')
+  @Roles('owner', 'member')
+  @UseGuards(JwtAuthGuard, PageRolesGuard)
+  async getTodoItem(@GetTodoItem() todoItem: TodoItem) {
+    return parseTodoItemForOutput(todoItem);
+  }
+
+  @Patch('/:todoItemId/complete')
+  @Roles('owner', 'member')
+  @UseGuards(JwtAuthGuard, PageRolesGuard)
+  async toggleCompleteTodoItem(@GetTodoItem() todoItem: TodoItem) {
+    return await this.todoItemService.toggleCompleteTodoItem(todoItem);
   }
 
   @Patch('/:todoItemId')
@@ -37,10 +60,9 @@ export class TodoItemController {
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async updateTodoItem(
     @GetTodoItem() todoItem: TodoItem,
-    @Body()
-    updateTodoItemDto: UpdateTodoItemDto,
+    @Body() updateTodoItemDto: UpdateTodoItemDto,
   ) {
-    return await this.todoItemService.updateTodoItem(
+    return await this.todoItemService.updateTodoItemBasicInformation(
       todoItem,
       updateTodoItemDto,
     );

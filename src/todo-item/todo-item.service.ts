@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodoItem } from 'src/todo-item/todo-item.entity';
 import { Todo } from 'src/todo/todo.entity';
+import { User } from 'src/user/user.entity';
 import { CreateTodoItemDto } from './dto/create-todo-item.dto';
 import { UpdateTodoItemDto } from './dto/update-todo-item.dto';
 import { TodoItemRepository } from './todo-item.repository';
@@ -15,10 +16,12 @@ export class TodoItemService {
 
   async createTodoItem(
     todo: Todo,
+    creator: User,
     createTodoItemDto: CreateTodoItemDto,
   ): Promise<TodoItem> {
     return await this.todoItemRepository.createTodoItem(
       todo,
+      creator,
       createTodoItemDto,
     );
   }
@@ -35,15 +38,34 @@ export class TodoItemService {
 
   async updateTodoItem(
     todoItem: TodoItem,
-    updateTodoItemDto: UpdateTodoItemDto,
+    updates: Partial<TodoItem>,
   ): Promise<TodoItem> {
-    return await this.todoItemRepository.updateTodoItem(
-      todoItem,
-      updateTodoItemDto,
-    );
+    return await this.todoItemRepository.updateTodoItem(todoItem, updates);
+  }
+
+  async toggleCompleteTodoItem(todoItem: TodoItem): Promise<TodoItem> {
+    const data = {
+      completed: !todoItem.completed,
+    };
+
+    if (data.completed === true) {
+      data['completedAt'] = Date.now();
+    }
+
+    return await this.updateTodoItem(todoItem, data);
   }
 
   async deleteTodoItem(todoItem: TodoItem) {
     await this.todoItemRepository.remove(todoItem);
+  }
+
+  async updateTodoItemBasicInformation(
+    todoItem: TodoItem,
+    updateTodoItemDto: UpdateTodoItemDto,
+  ) {
+    return await this.todoItemRepository.updateTodoItem(todoItem, {
+      title: updateTodoItemDto.title ?? todoItem.title,
+      description: updateTodoItemDto.description ?? todoItem.description,
+    });
   }
 }
