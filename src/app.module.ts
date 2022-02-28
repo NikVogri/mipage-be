@@ -14,6 +14,7 @@ import { NotebookBlockModule } from './notebook-block/notebook-block.module';
 import { NotificationModule } from './notification/notification.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { LogModule } from './log/log.module';
+import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { LogModule } from './log/log.module';
     NotebookBlockModule,
     NotificationModule,
     LogModule,
+    TodoItemCommentModule,
   ],
   controllers: [],
   providers: [
