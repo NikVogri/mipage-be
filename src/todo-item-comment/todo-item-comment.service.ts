@@ -26,9 +26,9 @@ export class TodoItemCommentService {
 
   async getTodoItemComments(todoItem: TodoItem, p: string, batch: string) {
     const page = p ? parseInt(p) : 0;
-    let pageSize = batch ? parseInt(batch) : 0;
+    let pageSize = batch ? parseInt(batch) : 10;
 
-    // Limit to max 50 comments per request
+    // Limit to max 25 comments per request
     if (pageSize > 25) {
       pageSize = 25;
     }
