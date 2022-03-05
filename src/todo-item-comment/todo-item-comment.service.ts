@@ -24,6 +24,10 @@ export class TodoItemCommentService {
     );
   }
 
+  async getTotalComments(todoItem: TodoItem): Promise<number> {
+    return await this.todoItemRepository.count({ where: { todoItem } });
+  }
+
   async getTodoItemComments(todoItem: TodoItem, p: string, batch: string) {
     const page = p ? parseInt(p) : 0;
     let pageSize = batch ? parseInt(batch) : 10;
