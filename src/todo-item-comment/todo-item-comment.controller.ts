@@ -29,7 +29,16 @@ export class TodoItemCommentController {
       batchSize,
     );
 
-    return res.map((c: TodoItemComment) => parseCreateTodoItemCommentOutput(c));
+    const totalComments = await this.todoItemCommentService.getTotalComments(
+      todoItem,
+    );
+
+    return {
+      total: totalComments,
+      comments: res.map((c: TodoItemComment) =>
+        parseCreateTodoItemCommentOutput(c),
+      ),
+    };
   }
 
   @Post()
