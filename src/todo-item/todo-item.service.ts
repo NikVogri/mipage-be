@@ -49,7 +49,9 @@ export class TodoItemService {
     };
 
     if (data.completed === true) {
-      data['completedAt'] = Date.now();
+      data['completedAt'] = new Date();
+    } else {
+      data['completedAt'] = null;
     }
 
     return await this.updateTodoItem(todoItem, data);
