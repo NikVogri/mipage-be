@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotebookService } from 'src/notebook/notebook.service';
 import { User } from 'src/user/user.entity';
@@ -22,6 +26,13 @@ export class PageService {
     createPageDto: CreatePageDto,
     owner: User,
   ): Promise<{ id: string }> {
+    // TODO: remove this after notebook page is correctly implemented
+    if (createPageDto.type === PageType.notebook) {
+      throw new ForbiddenException(
+        'You are not allowed to create a notebook page at this time.',
+      );
+    }
+
     const page = await this.pageRepository.createPage(createPageDto, owner);
 
     // Also create a first notebook block
