@@ -26,6 +26,6 @@ export class TodoItemComment {
   @ManyToOne(() => TodoItem, { onDelete: 'CASCADE' })
   todoItem: TodoItem;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   author: User;
 }
