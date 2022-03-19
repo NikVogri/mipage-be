@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Patch,
   Post,
@@ -33,6 +35,15 @@ export class TodoController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   getPageTodos(@GetPage() page: Page) {
+    return this.todoService.getAllPageTodos(page);
+  }
+
+  @Get('/public')
+  getPublicPageTodos(@GetPage() page: Page) {
+    if (page.private) {
+      throw new ForbiddenException();
+    }
+
     return this.todoService.getAllPageTodos(page);
   }
 

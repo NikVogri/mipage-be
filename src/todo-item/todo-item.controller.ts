@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Patch,
   Post,
@@ -20,6 +21,8 @@ import { Roles } from 'src/page/roles.decorator';
 import { GetUser } from 'src/user/get-user.decorator';
 import { User } from 'src/user/user.entity';
 import { parseTodoItemForOutput } from './serializers/todo-item.serializer';
+import { Page } from 'src/page/page.entity';
+import { GetPage } from 'src/page/get-page.decorator';
 
 @Controller('/pages/:pageId/todos/:todoId/todo-items')
 export class TodoItemController {
@@ -45,6 +48,18 @@ export class TodoItemController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async getTodoItem(@GetTodoItem() todoItem: TodoItem) {
+    return parseTodoItemForOutput(todoItem);
+  }
+
+  @Get('/:todoItemId/public')
+  async getPublicTodoItem(
+    @GetPage() page: Page,
+    @GetTodoItem() todoItem: TodoItem,
+  ) {
+    if (page.private) {
+      throw new ForbiddenException();
+    }
+
     return parseTodoItemForOutput(todoItem);
   }
 
