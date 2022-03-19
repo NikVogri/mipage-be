@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreatePageDto } from './dto/create-page.dto';
 import { PageService } from './page.service';
 import { User } from 'src/user/user.entity';
@@ -45,6 +53,15 @@ export class PagesController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async getSinglePage(@GetPage() page: Page) {
+    return page;
+  }
+
+  @Get('/:pageId/public')
+  async getSinglePublicPage(@GetPage() page: Page) {
+    if (page.private) {
+      throw new ForbiddenException();
+    }
+
     return page;
   }
 }
