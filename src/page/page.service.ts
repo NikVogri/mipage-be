@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotebookService } from 'src/notebook/notebook.service';
 import { User } from 'src/user/user.entity';
 import { CreatePageDto } from './dto/create-page.dto';
+import { UpdatePageDto } from './dto/update-page.dto';
 import { Page, PageType } from './page.entity';
 import { PageRepository } from './page.repository';
 import {
@@ -75,5 +76,16 @@ export class PageService {
     }
 
     return page;
+  }
+  async updatePage(
+    page: Page,
+    updatePageDto: UpdatePageDto,
+  ): Promise<OutputPage> {
+    const updatedPage = await this.pageRepository.updatePage(
+      page,
+      updatePageDto,
+    );
+
+    return parsePageForOutput(updatedPage);
   }
 }

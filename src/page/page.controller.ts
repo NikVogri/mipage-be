@@ -4,6 +4,7 @@ import {
   Delete,
   ForbiddenException,
   Get,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { PageRolesGuard } from './guards/page-roles.guard';
 import { GetPage } from './get-page.decorator';
 import { Page } from './page.entity';
 import { Roles } from './roles.decorator';
+import { UpdatePageDto } from './dto/update-page.dto';
 
 @Controller('pages')
 export class PagesController {
@@ -63,5 +65,14 @@ export class PagesController {
     }
 
     return page;
+  }
+  @Patch('/:pageId')
+  @Roles('owner')
+  @UseGuards(JwtAuthGuard, PageRolesGuard)
+  async updatePage(
+    @Body() updatePageDto: UpdatePageDto,
+    @GetPage() page: Page,
+  ) {
+    return this.pageService.updatePage(page, updatePageDto);
   }
 }
