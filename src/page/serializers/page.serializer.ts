@@ -55,7 +55,7 @@ export const parsePageForOutput = (page: Page): OutputPage => {
     type: page.type,
     updatedAt: page.updatedAt,
     isPrivate: page.private,
-    notebooks,
+    notebooks: page.type === PageType.notebook ? notebooks : undefined,
     members,
     owner: {
       id: page.owner.id,
