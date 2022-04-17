@@ -15,6 +15,7 @@ import { NotificationModule } from './notification/notification.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { LogModule } from './log/log.module';
 import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.mod
     NotificationModule,
     LogModule,
     TodoItemCommentModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [
