@@ -4,19 +4,28 @@ import { AuthService } from './auth.service';
 import { AuthLoginCredentialsDto } from './dto/auth-login-credentials.dto';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import { EmailService } from 'src/email/email.service';
+import { EMAIL } from 'src/email/models';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
+    private emailService: EmailService,
   ) {}
 
   @Post('/register')
   async register(
     @Body() authRegisterCredentialsDto: AuthRegisterCredentialsDto,
   ) {
-    return this.authService.register(authRegisterCredentialsDto);
+    const { email, username } = authRegisterCredentialsDto;
+
+    await this.authService.register(authRegisterCredentialsDto);
+
+    await this.emailService.sendEmail(EMAIL.welcome, email, {
+      username: username,
+    });
   }
 
   @Post('/login')
