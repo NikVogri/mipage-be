@@ -8,7 +8,7 @@ export default `
         <title></title>
     </head>
     <body>
-        <h3>Hi, ##USERNAME##!</h3>
+        <hp>Hi!</p>
         <p>Here's your password reset URL: <a href="##RESET_URL##">##RESET_URL##</a></p>
         <br>
         <br>

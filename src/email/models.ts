@@ -18,6 +18,5 @@ export interface EmailData {
 }
 
 export interface IPasswordResetEmail extends EmailData {
-  username: string;
   reset_url: string;
 }
