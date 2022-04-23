@@ -24,6 +24,10 @@ export class UserService {
     return user;
   };
 
+  getSingleUserByEmail = async (email: string): Promise<User> => {
+    return await this.userRepository.findOne({ where: { email } });
+  };
+
   getUsersWithQuery = (query: string): Promise<User[]> => {
     if (!query) {
       throw new BadRequestException("Query can't be empty");
