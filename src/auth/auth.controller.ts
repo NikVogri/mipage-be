@@ -4,28 +4,21 @@ import { AuthService } from './auth.service';
 import { AuthLoginCredentialsDto } from './dto/auth-login-credentials.dto';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import { EmailService } from 'src/email/email.service';
-import { EMAIL } from 'src/email/models';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
-    private emailService: EmailService,
   ) {}
 
   @Post('/register')
   async register(
     @Body() authRegisterCredentialsDto: AuthRegisterCredentialsDto,
   ) {
-    const { email, username } = authRegisterCredentialsDto;
-
-    await this.authService.register(authRegisterCredentialsDto);
-
-    await this.emailService.sendEmail(EMAIL.welcome, email, {
-      username: username,
-    });
+    return this.authService.register(authRegisterCredentialsDto);
   }
 
   @Post('/login')
@@ -56,5 +49,15 @@ export class AuthController {
       })
       .status(200)
       .send({ success: true });
+  }
+
+  @Post('/forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('/reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetForgottenPassword(resetPasswordDto);
   }
 }
