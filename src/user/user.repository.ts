@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { AuthRegisterCredentialsDto } from '../auth/dto/auth-register-credentials.dto';
+import { Password } from 'src/helpers/Password';
 import { User } from './user.entity';
-import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
   InternalServerErrorException,
@@ -13,7 +13,7 @@ export class UserRespository extends Repository<User> {
   async createUser(authRegisterCredentialsDto: AuthRegisterCredentialsDto) {
     const { email, username, password } = authRegisterCredentialsDto;
 
-    const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
+    const hashedPassword = await Password.hash(password);
 
     const user = this.create({ email, username, password: hashedPassword });
 
@@ -46,6 +46,10 @@ export class UserRespository extends Repository<User> {
     );
 
     return user;
+  }
+
+  async getUserById(id: string): Promise<User> {
+    return await this.findOne(id);
   }
 
   async getUsersWithQuery(query: string): Promise<User[]> {
