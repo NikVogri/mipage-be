@@ -43,12 +43,7 @@ export class AuthController {
 
   @Post('/logout')
   async logout(@Res() response: Response) {
-    response
-      .cookie('mipage-auth', null, {
-        expires: new Date(Date.now() - 3600), // set expire to date in the past
-      })
-      .status(200)
-      .send({ success: true });
+    response.clearCookie('mipage-auth').status(200).send({ success: true });
   }
 
   @Post('/forgot-password')
