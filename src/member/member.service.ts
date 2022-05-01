@@ -72,4 +72,15 @@ export class MemberService {
       total: page.members.length,
     };
   }
+
+  async userLeavePage(page: Page, user: User) {
+    if (!page.members.some((pM) => pM.id === user.id)) {
+      throw new BadRequestException(
+        `User with the id ${user.id} is not a member of this page`,
+      );
+    }
+
+    page.members = page.members.filter((pM) => pM.id !== user.id);
+    await this.pageRepository.save(page);
+  }
 }
