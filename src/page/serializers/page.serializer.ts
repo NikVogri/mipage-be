@@ -2,7 +2,9 @@ import {
   NotebookMinOutput,
   parseNotebookForMinOutput,
 } from 'src/notebook/serializers/notebook.serializer';
+import { User } from 'src/user/user.entity';
 import { Page, PageType } from '../page.entity';
+
 export interface OutputPage {
   id: string;
   title: string;
@@ -31,6 +33,7 @@ export interface MinOutPutPage {
   type: string;
   createdAt: Date;
   notebooks?: NotebookMinOutput[];
+  isOwner: boolean;
 }
 
 export const parsePageForOutput = (page: Page): OutputPage => {
@@ -65,7 +68,10 @@ export const parsePageForOutput = (page: Page): OutputPage => {
   };
 };
 
-export const parsePageForMinOutput = (page: Page): MinOutPutPage => {
+export const parsePageForMinOutput = (
+  page: Page,
+  user: User,
+): MinOutPutPage => {
   let notebooks = undefined;
   if (page.type === PageType.notebook) {
     notebooks = page.notebooks.map((notebook) =>
@@ -79,5 +85,6 @@ export const parsePageForMinOutput = (page: Page): MinOutPutPage => {
     type: page.type,
     createdAt: page.createdAt,
     notebooks,
+    isOwner: page.owner.id === user.id,
   };
 };
