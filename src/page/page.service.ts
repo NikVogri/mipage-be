@@ -65,7 +65,7 @@ export class PageService {
 
   async getAllUserPagesForSidebar(user: User) {
     const associatedPages = await this.getUserAssociatedPages(user);
-    return associatedPages.map((page) => parsePageForMinOutput(page));
+    return associatedPages.map((page) => parsePageForMinOutput(page, user));
   }
 
   async getSinglePage(pageId: string): Promise<Page> {
