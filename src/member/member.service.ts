@@ -27,6 +27,12 @@ export class MemberService {
       );
     }
 
+    if (page.owner.id === user.id) {
+      throw new BadRequestException(
+        `User with the email ${email} is the owner of this page`,
+      );
+    }
+
     if (page.members.some((member) => member.id === user.id)) {
       throw new BadRequestException(
         `User with the email ${email} is already a member of this page`,
