@@ -1,7 +1,8 @@
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, MinLength } from 'class-validator';
 
 export class UpdatePageDto {
   @IsString()
+  @MinLength(3)
   title: string;
 
   @IsBoolean()
