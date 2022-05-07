@@ -21,7 +21,6 @@ export class MemberController {
     @GetPage() page: Page,
     @Body() inviteToPageDto: InviteToPageDto,
   ) {
-    // TODO: optional - send email
     return this.memberService.addUserToPage(page, inviteToPageDto);
   }
 

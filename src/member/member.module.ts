@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailModule } from 'src/email/email.module';
 import { FindMemberMiddleware } from 'src/middleware/get-member.middleware';
 import { NotificationRepository } from 'src/notification/notification.repository';
 import { NotificationService } from 'src/notification/notification.service';
@@ -18,6 +19,7 @@ import { MemberService } from './member.service';
       PageRepository,
     ]),
     PagesModule,
+    EmailModule,
   ],
   providers: [MemberService, NotificationService, UserService],
   controllers: [MemberController],

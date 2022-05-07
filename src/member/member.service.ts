@@ -2,12 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotificationType } from 'src/notification/notification.entity';
 import { NotificationService } from 'src/notification/notification.service';
+import { EmailService } from 'src/email/email.service';
 import { Page } from 'src/page/page.entity';
 import { PageRepository } from 'src/page/page.repository';
 import { User } from 'src/user/user.entity';
 import { UserRespository } from 'src/user/user.repository';
 import { InviteToPageDto } from './dto/invite-to-page.dto';
 import { parseMemberForOutput } from './serializers/member.serializer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MemberService {
@@ -15,6 +17,8 @@ export class MemberService {
     @InjectRepository(UserRespository) private userRepository: UserRespository,
     @InjectRepository(PageRepository) private pageRepository: PageRepository,
     private notificationService: NotificationService,
+    private emailService: EmailService,
+    private configService: ConfigService,
   ) {}
 
   async addUserToPage(page: Page, inviteToPageDto: InviteToPageDto) {
@@ -44,6 +48,14 @@ export class MemberService {
         additionalData: { pageId: page.id },
       });
     }
+    await this.emailService.sendAddedToPage(
+      user.email,
+      `${this.configService.get('URL_ORIGIN')}/pages/${page.id}`,
+      {
+        title: `You've been added to a new page`,
+        body: `You have been added to the page: ${page.title}`,
+      },
+    );
 
     return page.members.map((member) => parseMemberForOutput(member));
   }
