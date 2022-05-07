@@ -1,12 +1,13 @@
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EMAIL } from '../models';
+import { Template, TEMPLATE, WelcomeEmailTemplateReplacers } from '../models';
 
 // Email Providers
 import { SendGrid } from '../providers/sendgrid';
 
 // Templates
 import passwordResetTemplate from '../templates/password-reset.template';
+import ctaNotificationTemplate from '../templates/notification.template';
 import welcomeTemplate from '../templates/welcome.template';
 
 export class EmailRetriever {
@@ -23,34 +24,33 @@ export class EmailRetriever {
     }
   }
 
-  public retrieveTemplate(emailType: EMAIL): string {
-    switch (emailType) {
-      case EMAIL.welcome:
-        return welcomeTemplate;
-      case EMAIL.passwordReset:
-        return passwordResetTemplate;
-      default:
-        throw new Error('Template not supported');
-    }
-  }
-
-  public retrievePayloadDefaults(emailType: EMAIL): {
-    subject: string;
-    replacements: Record<string, string>;
-  } {
-    switch (emailType) {
-      case EMAIL.welcome:
+  public retrieveTemplate<T extends object>(template: TEMPLATE): Template<T> {
+    switch (template) {
+      case TEMPLATE.welcome:
         return {
+          stringTemplate: welcomeTemplate,
           subject: 'Welcome to Mipage',
-          replacements: {},
+          replacements: {} as T,
         };
-      case EMAIL.passwordReset:
+      case TEMPLATE.passwordReset:
         return {
+          stringTemplate: passwordResetTemplate,
           subject: 'Reset your password',
-          replacements: {},
+          replacements: {} as T,
+        };
+      case TEMPLATE.notificationWithCta:
+        return {
+          stringTemplate: ctaNotificationTemplate,
+          subject: 'You have a notification waiting',
+          replacements: {
+            title: 'You have a notification waiting',
+            body: 'New notification is available',
+            url: 'https://mipage.com',
+            url_description: 'Go to Mipage',
+          } as T,
         };
       default:
-        throw new Error('Email type not supported');
+        return null;
     }
   }
 }
