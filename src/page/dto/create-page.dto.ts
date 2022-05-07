@@ -1,8 +1,9 @@
-import { IsString, IsBoolean, IsEnum } from 'class-validator';
+import { IsString, IsBoolean, IsEnum, MinLength } from 'class-validator';
 import { PageType } from '../page.entity';
 
 export class CreatePageDto {
   @IsString()
+  @MinLength(3)
   title: string;
 
   @IsBoolean()
