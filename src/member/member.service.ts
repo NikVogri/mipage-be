@@ -21,31 +21,29 @@ export class MemberService {
     const { email } = inviteToPageDto;
     const user = await this.userRepository.getAllUserDataByEmail(email);
 
-    if (!user) {
-      throw new BadRequestException(
-        `User with the email ${email} does not exist`,
-      );
-    }
+    // Don't return an error to FE if user does not exist
+    // This could have been abused by a malicious user
+    if (user) {
+      if (page.owner.id === user.id) {
+        throw new BadRequestException(
+          `User with the email ${email} is the owner of this page`,
+        );
+      }
 
-    if (page.owner.id === user.id) {
-      throw new BadRequestException(
-        `User with the email ${email} is the owner of this page`,
-      );
-    }
+      if (page.members.some((member) => member.id === user.id)) {
+        throw new BadRequestException(
+          `User with the email ${email} is already a member of this page`,
+        );
+      }
 
-    if (page.members.some((member) => member.id === user.id)) {
-      throw new BadRequestException(
-        `User with the email ${email} is already a member of this page`,
-      );
+      await this.pageRepository.addMember(page, user);
+      await this.notificationService.createNotification(user, {
+        type: NotificationType.ADDED_TO_PAGE,
+        title: "You've been added to a page",
+        body: `You have been added to the page: ${page.title}`,
+        additionalData: { pageId: page.id },
+      });
     }
-
-    await this.pageRepository.addMember(page, user);
-    await this.notificationService.createNotification(user, {
-      type: NotificationType.ADDED_TO_PAGE,
-      title: "You've been added to a page",
-      body: `You have been added to the page: ${page.title}`,
-      additionalData: { pageId: page.id },
-    });
 
     return page.members.map((member) => parseMemberForOutput(member));
   }
