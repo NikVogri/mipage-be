@@ -13,7 +13,6 @@ import { ConfigService } from '@nestjs/config';
 import { Password } from 'src/helpers/Password';
 import { UserService } from 'src/user/user.service';
 import { EmailService } from 'src/email/email.service';
-import { EMAIL, IPasswordResetEmail } from 'src/email/models';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
@@ -30,15 +29,10 @@ export class AuthService {
   ) {}
 
   async register(authRegisterCredentialsDto: AuthRegisterCredentialsDto) {
-    await this.userRepository.createUser(authRegisterCredentialsDto);
+    const { email, username } = authRegisterCredentialsDto;
 
-    await this.emailService.sendEmail(
-      EMAIL.welcome,
-      authRegisterCredentialsDto.email,
-      {
-        username: authRegisterCredentialsDto.username,
-      },
-    );
+    await this.userRepository.createUser(authRegisterCredentialsDto);
+    await this.emailService.sendWelcome(email, username);
   }
 
   async validateUser(
@@ -127,15 +121,11 @@ export class AuthService {
 
     const token = await this.createPasswordResetToken(user.id);
 
-    await this.emailService.sendEmail<IPasswordResetEmail>(
-      EMAIL.passwordReset,
-      email,
-      {
-        reset_url: `${this.configService.get(
-          'URL_ORIGIN',
-        )}/reset-password/${token}`,
-      },
-    );
+    const resetUrl = `${this.configService.get(
+      'URL_ORIGIN',
+    )}/reset-password/${token}`;
+
+    await this.emailService.sendPasswordReset(email, resetUrl);
   }
 
   async resetForgottenPassword({ token, password }: ResetPasswordDto) {
