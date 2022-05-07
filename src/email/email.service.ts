@@ -1,4 +1,11 @@
-import { EmailProviderData, IEmailProvider, EMAIL } from './models';
+import {
+  EmailProviderPayload,
+  IEmailProvider,
+  TEMPLATE,
+  WelcomeEmailTemplateReplacers,
+  PasswordResetEmailTemplateReplacers,
+  AddedToPageEmailTemplateReplacers,
+} from './models';
 import { Inject, Injectable } from '@nestjs/common';
 import { EmailTemplateFormatter } from './helpers/email-template-formatter.service';
 import { EmailRetriever } from './helpers/email.retriever.service';
@@ -16,25 +23,72 @@ export class EmailService {
     this.emailProvider = this.emailRetriever.getEmailProvider();
   }
 
-  public async sendEmail<T>(
-    emailType: EMAIL,
+  private async sendEmail(
     toEmail: string,
-    replacements: Record<string, string> & T,
+    subject: string,
+    template: string,
   ): Promise<void> {
-    const emailInfo = this.emailRetriever.retrievePayloadDefaults(emailType);
-
-    const templateString = this.emailRetriever.retrieveTemplate(emailType);
-    const template = this.emailTemplateFormatter.buildHtmlTemplate(
-      templateString,
-      { ...emailInfo.replacements, ...replacements },
-    );
-
-    const payload: EmailProviderData = {
+    const payload: EmailProviderPayload = {
       toEmail: toEmail,
-      subject: replacements.subject ?? emailInfo.subject,
+      subject: subject,
       template: template,
     };
 
     await this.emailProvider.send(payload);
+  }
+
+  async sendWelcome(toEmail: string, username: string): Promise<void> {
+    const template =
+      this.emailRetriever.retrieveTemplate<WelcomeEmailTemplateReplacers>(
+        TEMPLATE.welcome,
+      );
+
+    template.replacements.username = username;
+
+    const htmlTemplate = this.emailTemplateFormatter.buildHtmlTemplate(
+      template.stringTemplate,
+      template.replacements,
+    );
+
+    await this.sendEmail(toEmail, template.subject, htmlTemplate);
+  }
+
+  async sendPasswordReset(toEmail: string, resetUrl: string): Promise<void> {
+    const template =
+      this.emailRetriever.retrieveTemplate<PasswordResetEmailTemplateReplacers>(
+        TEMPLATE.passwordReset,
+      );
+
+    template.replacements.reset_url = resetUrl;
+
+    const htmlTemplate = this.emailTemplateFormatter.buildHtmlTemplate(
+      template.stringTemplate,
+      template.replacements,
+    );
+
+    await this.sendEmail(toEmail, template.subject, htmlTemplate);
+  }
+
+  async sendAddedToPage(
+    toEmail: string,
+    url: string,
+    { title, body }: { title?: string; body?: string } = {},
+  ): Promise<void> {
+    const template =
+      this.emailRetriever.retrieveTemplate<AddedToPageEmailTemplateReplacers>(
+        TEMPLATE.notificationWithCta,
+      );
+
+    if (title) template.replacements.title = title;
+    if (body) template.replacements.body = body;
+    template.replacements.url = url;
+    template.replacements.url_description = 'Visit the page now';
+
+    const htmlTemplate = this.emailTemplateFormatter.buildHtmlTemplate(
+      template.stringTemplate,
+      template.replacements,
+    );
+
+    await this.sendEmail(toEmail, template.subject, htmlTemplate);
   }
 }

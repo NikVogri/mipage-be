@@ -1,9 +1,7 @@
-import { EmailData } from '../models';
-
 export class EmailTemplateFormatter {
-  protected applyOverridesToTemplate(
+  protected applyOverridesToTemplate<T>(
     template: string,
-    overrides: EmailData,
+    overrides: T,
   ): string {
     let output = template;
 
@@ -21,7 +19,7 @@ export class EmailTemplateFormatter {
     return output;
   }
 
-  public buildHtmlTemplate(template: string, overrides: EmailData): string {
+  public buildHtmlTemplate<T>(template: string, overrides: T): string {
     return this.applyOverridesToTemplate(template, overrides);
   }
 }

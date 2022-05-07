@@ -1,4 +1,4 @@
-import { EmailProviderData, IEmailProvider } from '../models';
+import { EmailProviderPayload, IEmailProvider } from '../models';
 import { InternalServerErrorException } from '@nestjs/common';
 
 import axios from 'axios';
@@ -8,7 +8,7 @@ export class SendGrid implements IEmailProvider {
 
   private apiUrl = 'https://api.sendgrid.com/v3';
 
-  private buildPayload(data: EmailProviderData) {
+  private buildPayload(data: EmailProviderPayload) {
     return {
       personalizations: [
         {
@@ -34,7 +34,7 @@ export class SendGrid implements IEmailProvider {
     };
   }
 
-  async send(data: EmailProviderData): Promise<void> {
+  async send(data: EmailProviderPayload): Promise<void> {
     const url = this.apiUrl + '/mail/send';
     const payload = this.buildPayload(data);
 
