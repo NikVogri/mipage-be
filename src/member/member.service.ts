@@ -47,6 +47,15 @@ export class MemberService {
         body: `You have been added to the page: ${page.title}`,
         additionalData: { pageId: page.id },
       });
+
+      await this.emailService.sendAddedToPage(
+        user.email,
+        `${this.configService.get('URL_ORIGIN')}/pages/${page.id}`,
+        {
+          title: `You've been added to a new page`,
+          body: `You have been added to the page: ${page.title}`,
+        },
+      );
     }
     await this.emailService.sendAddedToPage(
       user.email,
