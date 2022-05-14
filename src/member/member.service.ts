@@ -57,14 +57,6 @@ export class MemberService {
         },
       );
     }
-    await this.emailService.sendAddedToPage(
-      user.email,
-      `${this.configService.get('URL_ORIGIN')}/pages/${page.id}`,
-      {
-        title: `You've been added to a new page`,
-        body: `You have been added to the page: ${page.title}`,
-      },
-    );
 
     return page.members.map((member) => parseMemberForOutput(member));
   }
