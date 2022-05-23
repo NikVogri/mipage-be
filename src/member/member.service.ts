@@ -91,5 +91,11 @@ export class MemberService {
 
     page.members = page.members.filter((pM) => pM.id !== user.id);
     await this.pageRepository.save(page);
+
+    await this.notificationService.createNotification(page.owner, {
+      type: NotificationType.USER_LEFT_YOUR_PAGE,
+      title: `A member has left your page`,
+      body: `${user.username} has left ${page.title}`,
+    });
   }
 }
