@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { GetPage } from 'src/page/get-page.decorator';
 import { PageRolesGuard } from 'src/page/guards/page-roles.guard';
+import { Page } from 'src/page/page.entity';
 import { Roles } from 'src/page/roles.decorator';
 import { GetTodoItem } from 'src/todo-item/get-todo-item.decorator';
 import { TodoItem } from 'src/todo-item/todo-item.entity';
@@ -45,11 +47,13 @@ export class TodoItemCommentController {
   async addComment(
     @GetTodoItem() todoItem: TodoItem,
     @GetUser() user: User,
+    @GetPage() page: Page,
     @Body() createCommentDto: CreateTodoItemCommentDto,
   ) {
     const res = await this.todoItemCommentService.addComment(
       todoItem,
       user,
+      page,
       createCommentDto,
     );
 

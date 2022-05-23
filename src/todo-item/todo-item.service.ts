@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotificationType } from 'src/notification/notification.entity';
+import { NotificationService } from 'src/notification/notification.service';
+import { Page } from 'src/page/page.entity';
 import { TodoItem } from 'src/todo-item/todo-item.entity';
 import { Todo } from 'src/todo/todo.entity';
 import { User } from 'src/user/user.entity';
@@ -12,6 +15,7 @@ export class TodoItemService {
   constructor(
     @InjectRepository(TodoItemRepository)
     private todoItemRepository: TodoItemRepository,
+    private notificationService: NotificationService,
   ) {}
 
   async createTodoItem(
@@ -43,7 +47,11 @@ export class TodoItemService {
     return await this.todoItemRepository.updateTodoItem(todoItem, updates);
   }
 
-  async toggleCompleteTodoItem(todoItem: TodoItem): Promise<TodoItem> {
+  async toggleCompleteTodoItem(
+    todoItem: TodoItem,
+    user: User,
+    page: Page,
+  ): Promise<TodoItem> {
     const data = {
       completed: !todoItem.completed,
     };
@@ -54,20 +62,69 @@ export class TodoItemService {
       data['completedAt'] = null;
     }
 
+    if (!this.isTodoItemOwner(todoItem, user)) {
+      this.notificationService.createNotification(todoItem.creator, {
+        type: NotificationType.TODO_ITEM_UPDATED,
+        title: `Your todo item has been updated`,
+        body: `${user.username} has ${
+          data.completed ? 'completed' : 'uncompleted'
+        } your todo item`,
+        additionalData: {
+          todoItemId: todoItem.id,
+          todoId: todoItem.todoId,
+          page: page.id,
+        },
+      });
+    }
+
     return await this.updateTodoItem(todoItem, data);
   }
 
-  async deleteTodoItem(todoItem: TodoItem) {
+  async deleteTodoItem(todoItem: TodoItem, user: User, page: Page) {
     await this.todoItemRepository.remove(todoItem);
+
+    if (!this.isTodoItemOwner(todoItem, user)) {
+      this.notificationService.createNotification(todoItem.creator, {
+        type: NotificationType.TODO_ITEM_REMOVED,
+        title: `Your todo item has been deleted`,
+        body: `${user.username} has deleted your todo item`,
+        additionalData: {
+          title: todoItem.title,
+          todoId: todoItem.todoId,
+          page: page.id,
+        },
+      });
+    }
   }
 
   async updateTodoItemBasicInformation(
     todoItem: TodoItem,
+    user: User,
+    page: Page,
     updateTodoItemDto: UpdateTodoItemDto,
-  ): Promise<TodoItem> {
-    return await this.todoItemRepository.updateTodoItem(todoItem, {
+  ) {
+    const updated = await this.todoItemRepository.updateTodoItem(todoItem, {
       title: updateTodoItemDto.title ?? todoItem.title,
       description: updateTodoItemDto.description ?? todoItem.description,
     });
+
+    if (!this.isTodoItemOwner(todoItem, user)) {
+      this.notificationService.createNotification(todoItem.creator, {
+        type: NotificationType.TODO_ITEM_UPDATED,
+        title: `Your todo item has been updated`,
+        body: `${user.username} has updated your todo item: ${todoItem.title}`,
+        additionalData: {
+          todoItemId: todoItem.id,
+          todoId: todoItem.todoId,
+          page: page.id,
+        },
+      });
+    }
+
+    return updated;
+  }
+
+  isTodoItemOwner(todoItem: TodoItem, user: User): boolean {
+    return todoItem.creator.id === user.id;
   }
 }
