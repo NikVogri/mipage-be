@@ -22,7 +22,6 @@ export class NotificationController {
     @GetNotification() notification: Notification,
     @GetUser() user: User,
   ) {
-    console.log(notification, user);
     return this.notificationService.markNotificationViewed(notification, user);
   }
 }
