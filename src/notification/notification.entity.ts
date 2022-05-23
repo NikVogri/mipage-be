@@ -10,6 +10,7 @@ import {
 export enum NotificationType {
   ADDED_TO_PAGE = 'ADDED_TO_PAGE',
   REMOVED_FROM_PAGE = 'REMOVED_FROM_PAGE',
+  USER_LEFT_YOUR_PAGE = 'USER_LEFT_YOUR_PAGE',
 }
 
 @Entity()
