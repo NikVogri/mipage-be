@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FindTodoItemMiddleware } from 'src/middleware/get-todo-item.middleware';
+import { NotificationModule } from 'src/notification/notification.module';
 import { PagesModule } from 'src/page/page.module';
 import { TodoRepository } from 'src/todo/todo.repository';
 import { TodoService } from 'src/todo/todo.service';
@@ -12,6 +13,7 @@ import { TodoItemService } from './todo-item.service';
   imports: [
     TypeOrmModule.forFeature([TodoItemRepository, TodoRepository]),
     PagesModule,
+    NotificationModule,
   ],
   providers: [TodoItemService, TodoService],
   controllers: [TodoItemController],
