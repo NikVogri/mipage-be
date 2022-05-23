@@ -71,11 +71,16 @@ export class TodoItemController {
   @Patch('/:todoItemId/complete')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async toggleCompleteTodoItem(@GetTodoItem() todoItem: TodoItem) {
+  async toggleCompleteTodoItem(
+    @GetTodoItem() todoItem: TodoItem,
+    @GetUser() user: User,
+    @GetPage() page: Page,
+  ) {
     const responseTodoItem = await this.todoItemService.toggleCompleteTodoItem(
       todoItem,
+      user,
+      page,
     );
-
     return parseTodoItemForOutput(responseTodoItem);
   }
 
@@ -84,11 +89,15 @@ export class TodoItemController {
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async updateTodoItem(
     @GetTodoItem() todoItem: TodoItem,
+    @GetUser() user: User,
+    @GetPage() page: Page,
     @Body() updateTodoItemDto: UpdateTodoItemDto,
   ) {
     const responseTodoItem =
       await this.todoItemService.updateTodoItemBasicInformation(
         todoItem,
+        user,
+        page,
         updateTodoItemDto,
       );
 
@@ -98,7 +107,11 @@ export class TodoItemController {
   @Delete('/:todoItemId')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async deleteTodoItem(@GetTodoItem() todoItem: TodoItem) {
-    return await this.todoItemService.deleteTodoItem(todoItem);
+  async deleteTodoItem(
+    @GetTodoItem() todoItem: TodoItem,
+    @GetUser() user: User,
+    @GetPage() page: Page,
+  ) {
+    return await this.todoItemService.deleteTodoItem(todoItem, user, page);
   }
 }

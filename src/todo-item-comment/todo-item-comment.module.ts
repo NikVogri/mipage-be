@@ -7,11 +7,13 @@ import { FindTodoItemMiddleware } from 'src/middleware/get-todo-item.middleware'
 import { TodoItemService } from 'src/todo-item/todo-item.service';
 import { TodoItemRepository } from 'src/todo-item/todo-item.repository';
 import { PagesModule } from 'src/page/page.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TodoItemCommentRepository, TodoItemRepository]),
     PagesModule,
+    NotificationModule,
   ],
   providers: [TodoItemCommentService, TodoItemService],
   controllers: [TodoItemCommentController],
