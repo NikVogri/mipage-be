@@ -52,14 +52,6 @@ export class UserRespository extends Repository<User> {
     return await this.findOne(id);
   }
 
-  async getUsersWithQuery(query: string): Promise<User[]> {
-    const users = await this.createQueryBuilder('user')
-      .where('LOWER(user.username) LIKE LOWER(:query)', { query: `%${query}%` })
-      .getMany();
-
-    return users;
-  }
-
   async updatePersonalInfo(
     user: User,
     updatePersonalInfoDto: UpdatePersonalInfoDto,
