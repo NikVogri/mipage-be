@@ -81,6 +81,7 @@ export class TodoItemController {
       user,
       page,
     );
+
     return parseTodoItemForOutput(responseTodoItem);
   }
 
