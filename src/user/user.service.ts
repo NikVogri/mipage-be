@@ -28,14 +28,6 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   };
 
-  getUsersWithQuery = (query: string): Promise<User[]> => {
-    if (!query) {
-      throw new BadRequestException("Query can't be empty");
-    }
-
-    return this.userRepository.getUsersWithQuery(query);
-  };
-
   updatePersonalInfo = (
     user: User,
     updatePersonalInfoDto: UpdatePersonalInfoDto,

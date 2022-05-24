@@ -25,12 +25,6 @@ export class UserController {
     return user;
   }
 
-  @Get('/find')
-  @UseGuards(JwtAuthGuard)
-  searchForUsers(@Query('q') query: string) {
-    return this.userService.getUsersWithQuery(query);
-  }
-
   @Post('/me/personal-info')
   @UseGuards(JwtAuthGuard)
   updatePersonalInfo(
