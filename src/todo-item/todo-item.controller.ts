@@ -71,7 +71,11 @@ export class TodoItemController {
     @GetUser() user: User,
     @GetPage() page: Page,
   ) {
-    await this.todoItemService.toggleCompleteTodoItem(todoItem, user, page);
+    return await this.todoItemService.toggleCompleteTodoItem(
+      todoItem,
+      user,
+      page,
+    );
   }
 
   @Patch('/:todoItemId')

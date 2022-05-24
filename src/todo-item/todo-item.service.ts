@@ -62,8 +62,10 @@ export class TodoItemService {
       data['completedAt'] = null;
     }
 
+    const updated = await this.updateTodoItem(todoItem, data);
+
     if (!this.isTodoItemOwner(todoItem, user)) {
-      this.notificationService.createNotification(todoItem.creator, {
+      await this.notificationService.createNotification(todoItem.creator, {
         type: NotificationType.TODO_ITEM_UPDATED,
         title: `Your todo item has been updated`,
         body: `${user.username} has ${
@@ -77,14 +79,14 @@ export class TodoItemService {
       });
     }
 
-    return await this.updateTodoItem(todoItem, data);
+    return updated;
   }
 
   async deleteTodoItem(todoItem: TodoItem, user: User, page: Page) {
     await this.todoItemRepository.remove(todoItem);
 
     if (!this.isTodoItemOwner(todoItem, user)) {
-      this.notificationService.createNotification(todoItem.creator, {
+      await this.notificationService.createNotification(todoItem.creator, {
         type: NotificationType.TODO_ITEM_REMOVED,
         title: `Your todo item has been deleted`,
         body: `${user.username} has deleted your todo item`,
@@ -109,7 +111,7 @@ export class TodoItemService {
     });
 
     if (!this.isTodoItemOwner(todoItem, user)) {
-      this.notificationService.createNotification(todoItem.creator, {
+      await this.notificationService.createNotification(todoItem.creator, {
         type: NotificationType.TODO_ITEM_UPDATED,
         title: `Your todo item has been updated`,
         body: `${user.username} has updated your todo item: ${todoItem.title}`,
@@ -125,6 +127,6 @@ export class TodoItemService {
   }
 
   isTodoItemOwner(todoItem: TodoItem, user: User): boolean {
-    return todoItem.creator.id === user.id;
+    return todoItem.creator?.id === user.id;
   }
 }
