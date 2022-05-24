@@ -25,6 +25,9 @@ export class NotificationRepository extends Repository<Notification> {
         user,
         viewed: false,
       },
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
