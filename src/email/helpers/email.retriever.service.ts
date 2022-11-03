@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Template, TEMPLATE, WelcomeEmailTemplateReplacers } from '../models';
+import { Template, TEMPLATE } from '../models';
 
 // Email Providers
 import { SendGrid } from '../providers/sendgrid';
