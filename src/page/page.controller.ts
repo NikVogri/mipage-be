@@ -18,6 +18,10 @@ import { GetPage } from './get-page.decorator';
 import { Page } from './page.entity';
 import { Roles } from './roles.decorator';
 import { UpdatePageDto } from './dto/update-page.dto';
+import {
+  parsePageForMinOutput,
+  parsePageForOutput,
+} from './serializers/page.serializer';
 
 @Controller('pages')
 export class PagesController {
@@ -29,33 +33,39 @@ export class PagesController {
     @Body() createPageDto: CreatePageDto,
     @GetUser() user: User,
   ) {
-    return await this.pageService.createPage(createPageDto, user);
+    const outputPage = await this.pageService.createPage(createPageDto, user);
+    return parsePageForOutput(outputPage);
   }
 
   @Delete('/:pageId')
   @Roles('owner')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async deletePage(@GetPage() page: Page) {
-    return this.pageService.deletePage(page);
+    await this.pageService.deletePage(page);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAllUserPages(@GetUser() user: User) {
-    return this.pageService.getAllUserPages(user);
+    const userAssociatedPages = await this.pageService.getAllUserPages(user);
+    return userAssociatedPages.map(parsePageForOutput);
   }
 
   @Get('/minimal')
   @UseGuards(JwtAuthGuard)
   async getAllUserPagesForSidebar(@GetUser() user: User) {
-    return this.pageService.getAllUserPagesForSidebar(user);
+    const responsePages = await this.pageService.getAllUserPagesForSidebar(
+      user,
+    );
+
+    return responsePages.map((page) => parsePageForMinOutput(page, user));
   }
 
   @Get('/:pageId')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async getSinglePage(@GetPage() page: Page) {
-    return page;
+    return parsePageForOutput(page);
   }
 
   @Get('/:pageId/public')
@@ -64,7 +74,7 @@ export class PagesController {
       throw new ForbiddenException();
     }
 
-    return page;
+    return parsePageForOutput(page);
   }
   @Patch('/:pageId')
   @Roles('owner')
@@ -73,6 +83,7 @@ export class PagesController {
     @Body() updatePageDto: UpdatePageDto,
     @GetPage() page: Page,
   ) {
-    return this.pageService.updatePage(page, updatePageDto);
+    const responsePage = await this.pageService.updatePage(page, updatePageDto);
+    return parsePageForOutput(responsePage);
   }
 }

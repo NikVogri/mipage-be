@@ -37,54 +37,54 @@ export interface MinOutPutPage {
 }
 
 export const parsePageForOutput = (page: Page): OutputPage => {
-  const members = page.members
-    ? page.members.slice(0, 3).map((member) => ({
-        id: member.id,
-        avatar: member.avatar,
-        username: member.username,
-      }))
-    : [];
-
-  const notebooks = page.notebooks
-    ? page.notebooks.map((nb) => ({
-        id: nb.id,
-        title: nb.title,
-      }))
-    : [];
-
-  return {
+  const output = {
     id: page.id,
     title: page.title,
     type: page.type,
     updatedAt: page.updatedAt,
     isPrivate: page.private,
-    notebooks: page.type === PageType.notebook ? notebooks : undefined,
-    members,
+    notebooks: undefined,
+    members: [],
     owner: {
       id: page.owner.id,
       avatar: page.owner.avatar,
       username: page.owner.username,
     },
   };
+
+  if (page.members?.length) {
+    output.members = page.members.slice(0, 3).map((member) => ({
+      id: member.id,
+      avatar: member.avatar,
+      username: member.username,
+    }));
+  }
+
+  if (page.type === PageType.notebook) {
+    output.notebooks = page.notebooks
+      ? page.notebooks.map(parseNotebookForMinOutput)
+      : [];
+  }
+
+  return output;
 };
 
 export const parsePageForMinOutput = (
   page: Page,
   user: User,
 ): MinOutPutPage => {
-  let notebooks = undefined;
-  if (page.type === PageType.notebook) {
-    notebooks = page.notebooks.map((notebook) =>
-      parseNotebookForMinOutput(notebook),
-    );
-  }
-
-  return {
+  const output = {
     id: page.id,
     title: page.title,
     type: page.type,
     createdAt: page.createdAt,
-    notebooks,
+    notebooks: undefined,
     isOwner: page.owner.id === user.id,
   };
+
+  if (page.type === PageType.notebook) {
+    output.notebooks = page.notebooks.map(parseNotebookForMinOutput);
+  }
+
+  return output;
 };

@@ -10,11 +10,6 @@ import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
 import { Page, PageType } from './page.entity';
 import { PageRepository } from './page.repository';
-import {
-  OutputPage,
-  parsePageForMinOutput,
-  parsePageForOutput,
-} from './serializers/page.serializer';
 
 @Injectable()
 export class PageService {
@@ -23,10 +18,7 @@ export class PageService {
     private notebookService: NotebookService,
   ) {}
 
-  async createPage(
-    createPageDto: CreatePageDto,
-    owner: User,
-  ): Promise<{ id: string }> {
+  async createPage(createPageDto: CreatePageDto, owner: User): Promise<Page> {
     // TODO: remove this after notebook page is correctly implemented
     if (createPageDto.type === PageType.notebook) {
       throw new ForbiddenException(
@@ -36,7 +28,7 @@ export class PageService {
 
     const page = await this.pageRepository.createPage(createPageDto, owner);
 
-    // Also create a first notebook block
+    // If notebook type page also create an initial notebook block
     if (page.type === PageType.notebook) {
       const notebook = await this.notebookService.createNotebook(page, {
         title: 'My notebook #1',
@@ -45,7 +37,7 @@ export class PageService {
       page.notebooks = [notebook];
     }
 
-    return parsePageForOutput(page);
+    return page;
   }
 
   async deletePage(page: Page): Promise<void> {
@@ -56,16 +48,12 @@ export class PageService {
     return this.pageRepository.getUserAssociatedPages(user);
   }
 
-  async getAllUserPages(user: User): Promise<OutputPage[]> {
-    const associatedPages = await this.getUserAssociatedPages(user);
-    return associatedPages.map((page) => ({
-      ...parsePageForOutput(page),
-    }));
+  async getAllUserPages(user: User): Promise<Page[]> {
+    return await this.getUserAssociatedPages(user);
   }
 
   async getAllUserPagesForSidebar(user: User) {
-    const associatedPages = await this.getUserAssociatedPages(user);
-    return associatedPages.map((page) => parsePageForMinOutput(page, user));
+    return await this.getUserAssociatedPages(user);
   }
 
   async getSinglePage(pageId: string): Promise<Page> {
@@ -77,15 +65,8 @@ export class PageService {
 
     return page;
   }
-  async updatePage(
-    page: Page,
-    updatePageDto: UpdatePageDto,
-  ): Promise<OutputPage> {
-    const updatedPage = await this.pageRepository.updatePage(
-      page,
-      updatePageDto,
-    );
 
-    return parsePageForOutput(updatedPage);
+  async updatePage(page: Page, updatePageDto: UpdatePageDto): Promise<Page> {
+    return await this.pageRepository.updatePage(page, updatePageDto);
   }
 }

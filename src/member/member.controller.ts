@@ -9,6 +9,7 @@ import { User } from 'src/user/user.entity';
 import { InviteToPageDto } from './dto/invite-to-page.dto';
 import { GetMember } from './get-member.decorator';
 import { MemberService } from './member.service';
+import { parseMemberForOutput } from './serializers/member.serializer';
 
 @Controller({ path: '/pages/:pageId/members' })
 export class MemberController {
@@ -21,14 +22,24 @@ export class MemberController {
     @GetPage() page: Page,
     @Body() inviteToPageDto: InviteToPageDto,
   ) {
-    return this.memberService.addUserToPage(page, inviteToPageDto);
+    const responseMembers = await this.memberService.addUserToPage(
+      page,
+      inviteToPageDto,
+    );
+
+    return responseMembers.map(parseMemberForOutput);
   }
 
   @Delete('/:memberId')
   @Roles('owner')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async removeUserFromPage(@GetPage() page: Page, @GetMember() member: User) {
-    return await this.memberService.removeUserFromPage(page, member);
+    const responseMembers = await this.memberService.removeUserFromPage(
+      page,
+      member,
+    );
+
+    return responseMembers.map(parseMemberForOutput);
   }
 
   @Delete()
@@ -36,12 +47,5 @@ export class MemberController {
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async userLeavePage(@GetPage() page: Page, @GetUser() user: User) {
     return await this.memberService.userLeavePage(page, user);
-  }
-
-  @Get()
-  @Roles('owner', 'member')
-  @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async getPageMembers(@GetPage() page: Page) {
-    return await this.memberService.getPageMembers(page);
   }
 }

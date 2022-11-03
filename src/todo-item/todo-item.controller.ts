@@ -37,11 +37,16 @@ export class TodoItemController {
     @Body()
     createTodoItemDto: CreateTodoItemDto,
   ) {
-    return await this.todoItemService.createTodoItem(
+    const responseTodoItem = await this.todoItemService.createTodoItem(
       todo,
       creator,
       createTodoItemDto,
     );
+
+    // explicitly set creator so it is not necessary to refetch creator data
+    responseTodoItem.creator = creator;
+
+    return parseTodoItemForOutput(responseTodoItem);
   }
 
   @Get('/:todoItemId')
@@ -67,7 +72,11 @@ export class TodoItemController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async toggleCompleteTodoItem(@GetTodoItem() todoItem: TodoItem) {
-    return await this.todoItemService.toggleCompleteTodoItem(todoItem);
+    const responseTodoItem = await this.todoItemService.toggleCompleteTodoItem(
+      todoItem,
+    );
+
+    return parseTodoItemForOutput(responseTodoItem);
   }
 
   @Patch('/:todoItemId')
@@ -77,10 +86,13 @@ export class TodoItemController {
     @GetTodoItem() todoItem: TodoItem,
     @Body() updateTodoItemDto: UpdateTodoItemDto,
   ) {
-    return await this.todoItemService.updateTodoItemBasicInformation(
-      todoItem,
-      updateTodoItemDto,
-    );
+    const responseTodoItem =
+      await this.todoItemService.updateTodoItemBasicInformation(
+        todoItem,
+        updateTodoItemDto,
+      );
+
+    return parseTodoItemForOutput(responseTodoItem);
   }
 
   @Delete('/:todoItemId')
