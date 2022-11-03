@@ -8,7 +8,6 @@ import { PageRepository } from 'src/page/page.repository';
 import { User } from 'src/user/user.entity';
 import { UserRespository } from 'src/user/user.repository';
 import { InviteToPageDto } from './dto/invite-to-page.dto';
-import { parseMemberForOutput } from './serializers/member.serializer';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -58,7 +57,7 @@ export class MemberService {
       );
     }
 
-    return page.members.map((member) => parseMemberForOutput(member));
+    return page.members;
   }
 
   async removeUserFromPage(page: Page, member: User) {
@@ -80,14 +79,7 @@ export class MemberService {
       additionalData: { pageId: page.id },
     });
 
-    return page.members.map((member) => parseMemberForOutput(member));
-  }
-
-  async getPageMembers(page: Page) {
-    return {
-      members: page.members.map((member) => parseMemberForOutput(member)),
-      total: page.members.length,
-    };
+    return page.members;
   }
 
   async userLeavePage(page: Page, user: User) {

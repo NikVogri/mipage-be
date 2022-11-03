@@ -16,17 +16,18 @@ export interface TodoItemOutput {
 }
 
 export const parseTodoItemForOutput = (todoItem: TodoItem): TodoItemOutput => {
-  const output: TodoItemOutput = {
-    ...todoItem,
-  };
-
-  if (todoItem.creator) {
-    output.creator = {
+  return {
+    id: todoItem.id,
+    completed: todoItem.completed,
+    title: todoItem.title,
+    description: todoItem.description,
+    todoId: todoItem.todoId,
+    createdAt: todoItem.createdAt,
+    completedAt: todoItem.completedAt,
+    creator: {
       id: todoItem.creator?.id,
       username: todoItem.creator?.username,
       avatar: todoItem.creator?.avatar,
-    };
-  }
-
-  return output;
+    },
+  };
 };

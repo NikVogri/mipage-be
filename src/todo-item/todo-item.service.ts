@@ -64,7 +64,7 @@ export class TodoItemService {
   async updateTodoItemBasicInformation(
     todoItem: TodoItem,
     updateTodoItemDto: UpdateTodoItemDto,
-  ) {
+  ): Promise<TodoItem> {
     return await this.todoItemRepository.updateTodoItem(todoItem, {
       title: updateTodoItemDto.title ?? todoItem.title,
       description: updateTodoItemDto.description ?? todoItem.description,
