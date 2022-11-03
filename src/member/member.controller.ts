@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseGuards, Delete, Get } from '@nestjs/common';
+import { Controller, Body, Post, UseGuards, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { GetPage } from 'src/page/get-page.decorator';
 import { PageRolesGuard } from 'src/page/guards/page-roles.guard';

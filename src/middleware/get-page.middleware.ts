@@ -1,13 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request } from 'express';
 import { extractIdFromPath } from 'src/helpers/extractIdFromPath';
 import { Page } from 'src/page/page.entity';
 import { PageService } from 'src/page/page.service';
-import v from 'validator';
 
 type RequestWithPage = Request & { page?: Page };
 
