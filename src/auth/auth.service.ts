@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthLoginCredentialsDto } from './dto/auth-login-credentials.dto';
 import { AuthRegisterCredentialsDto } from './dto/auth-register-credentials.dto';
 import { UserRespository } from '../user/user.repository';
-import { Jwt } from 'src/models';
+import { JwtPayload } from 'src/models';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.entity';
 import { ResetPasswordRepository } from './reset-password.repository';
@@ -56,13 +56,15 @@ export class AuthService {
   async token(authLoginCredentialsDto: AuthLoginCredentialsDto) {
     const user = await this.validateUser(authLoginCredentialsDto);
 
-    const jwtPayload: Jwt = {
+    const jwtPayload: JwtPayload = {
       id: user.id,
       roles: [],
       version: process.env.JWT_VERSION,
     };
 
-    return this.jwtService.sign(jwtPayload);
+    return this.jwtService.sign(jwtPayload, {
+      expiresIn: '30 days',
+    });
   }
 
   async createPasswordResetToken(userId: string) {
