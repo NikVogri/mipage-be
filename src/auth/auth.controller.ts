@@ -28,16 +28,14 @@ export class AuthController {
   ) {
     const expiryLengthInMs = 86400000 * 30; // 30 days
 
-    const token = await this.authService.token(
-      authLoginCredentialsDto
-    );
+    const token = await this.authService.token(authLoginCredentialsDto);
     const isProd = this.configService.get('STAGE') === 'prod';
 
     response
       .cookie('mipage-auth', token, {
         httpOnly: true,
         domain: isProd ? '.mipage.me' : undefined,
-        expires: new Date(expiryLengthInMs),
+        expires: new Date(Date.now() + expiryLengthInMs),
         secure: isProd,
         sameSite: isProd ? 'strict' : 'lax',
       })
