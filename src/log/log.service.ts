@@ -2,7 +2,7 @@ import { Injectable, Response } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogRepository } from './log.repository';
 import { Request } from 'express';
-import { Jwt } from 'src/models';
+import { JwtPayload } from 'src/models';
 import { decode } from 'jsonwebtoken';
 import { Logger } from '@nestjs/common';
 import { User } from 'src/user/user.entity';
@@ -78,7 +78,9 @@ export class LogService {
     }
 
     if (request.headers?.authorization?.includes('Bearer')) {
-      const jwt = decode(request.headers.authorization.split(' ')[1]) as Jwt;
+      const jwt = decode(
+        request.headers.authorization.split(' ')[1],
+      ) as JwtPayload;
       this.log.user = jwt?.id ? jwt.id : null;
     }
 
