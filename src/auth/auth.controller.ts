@@ -34,9 +34,10 @@ export class AuthController {
     response
       .cookie('mipage-auth', token, {
         httpOnly: true,
-        domain: isProd ? '.mipage.me' : undefined,
+        domain: isProd ? 'api.mipage.me' : undefined,
         expires: new Date(Date.now() + expiryLengthInMs),
         secure: isProd,
+        path: '/',
         sameSite: isProd ? 'strict' : 'lax',
       })
       .status(200)
