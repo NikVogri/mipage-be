@@ -1,16 +1,20 @@
-import { IsEmail, Matches, MinLength, IsString } from 'class-validator';
+import {
+  IsEmail,
+  Matches,
+  MinLength,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 export class AuthRegisterCredentialsDto {
   @IsEmail()
   email: string;
 
   @IsString()
   @MinLength(5)
+  @MaxLength(50)
   username: string;
 
   @MinLength(8)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message:
-      'Password must include at least 1 uppercase letter and at least 1 number',
-  })
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
   password: string;
 }
