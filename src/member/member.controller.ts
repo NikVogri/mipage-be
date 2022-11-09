@@ -34,7 +34,7 @@ export class MemberController {
   @Roles('owner')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async removeUserFromPage(@GetPage() page: Page, @GetMember() member: User) {
-    const responseMembers = await this.memberService.removeUserFromPage(
+    const responseMembers = await this.memberService.removeMemberFromPage(
       page,
       member,
     );
@@ -45,7 +45,7 @@ export class MemberController {
   @Delete()
   @Roles('member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async userLeavePage(@GetPage() page: Page, @GetUser() user: User) {
-    return await this.memberService.userLeavePage(page, user);
+  async leavePage(@GetPage() page: Page, @GetUser() user: User) {
+    return await this.memberService.leavePage(page, user);
   }
 }
