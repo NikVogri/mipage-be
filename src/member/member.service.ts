@@ -60,7 +60,7 @@ export class MemberService {
     return page.members;
   }
 
-  async removeUserFromPage(page: Page, member: User) {
+  async removeMemberFromPage(page: Page, member: User) {
     if (!page.members.some((pageMember) => pageMember.id === member.id)) {
       throw new BadRequestException(
         `User with the id ${member.id} is not a member of this page`,
@@ -82,7 +82,7 @@ export class MemberService {
     return page.members;
   }
 
-  async userLeavePage(page: Page, user: User) {
+  async leavePage(page: Page, user: User) {
     if (!page.members.some((pM) => pM.id === user.id)) {
       throw new BadRequestException(
         `User with the id ${user.id} is not a member of this page`,
