@@ -63,7 +63,7 @@ export class LogService {
   }
 
   private setInput(request: Request) {
-    ['body', 'params', 'query'].forEach((key) => {
+    ['params', 'query'].forEach((key) => {
       if (!isEmpty(request[key])) {
         this.log.input[key] = request[key];
       }
