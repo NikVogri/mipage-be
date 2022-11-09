@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthRegisterCredentialsDto } from './dto/auth-register-credentials.dto';
 import { AuthService } from './auth.service';
+import { ResetPasswordService } from './reset-password.service';
 import { AuthLoginCredentialsDto } from './dto/auth-login-credentials.dto';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
@@ -11,6 +12,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 export class AuthController {
   constructor(
     private authService: AuthService,
+    private resetPasswordService: ResetPasswordService,
     private configService: ConfigService,
   ) {}
 
@@ -51,11 +53,11 @@ export class AuthController {
 
   @Post('/forgot-password')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto);
+    return this.resetPasswordService.forgotPassword(forgotPasswordDto);
   }
 
   @Post('/reset-password')
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetForgottenPassword(resetPasswordDto);
+    return this.resetPasswordService.resetPasswordWithToken(resetPasswordDto);
   }
 }

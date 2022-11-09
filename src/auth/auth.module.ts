@@ -9,6 +9,7 @@ import { JwtStrategy } from './auth-strategy/jwt.strategy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ResetPasswordRepository } from './reset-password.repository';
+import { ResetPasswordService } from './reset-password.service';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { ResetPasswordRepository } from './reset-password.repository';
     }),
     EmailModule,
   ],
-  providers: [AuthService, JwtStrategy, UserService],
+  providers: [AuthService, JwtStrategy, UserService, ResetPasswordService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
