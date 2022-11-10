@@ -1,11 +1,11 @@
 import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateTodoItemDto {
-  @IsString({ message: 'description should be of type string' })
+  @IsString()
   @IsOptional()
   title: string;
 
-  @IsString({ message: 'description should be of type string' }) // TODO: create XSS validator
+  @IsString() // TODO: create XSS validator service when adding WSYWIG
   @IsOptional()
   description: string;
 }

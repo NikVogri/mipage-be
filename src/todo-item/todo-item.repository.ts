@@ -10,21 +10,18 @@ export class TodoItemRepository extends Repository<TodoItem> {
     creator: User,
     createTodoItemDto: CreateTodoItemDto,
   ) {
-    const { title } = createTodoItemDto;
-
     const todoItem = this.create({
       todo,
-      title,
+      title: createTodoItemDto.title,
       creator,
     });
 
     await this.save(todoItem);
-    delete todoItem.todo;
-    delete todoItem.creator;
+
     return todoItem;
   }
 
-  async getSingleTodoItem(todoItemId: string): Promise<TodoItem> {
+  async getTodoItem(todoItemId: string): Promise<TodoItem> {
     return await this.findOne(todoItemId, { relations: ['creator'] });
   }
 
