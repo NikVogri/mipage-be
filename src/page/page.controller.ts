@@ -46,25 +46,25 @@ export class PagesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getAllUserPages(@GetUser() user: User) {
-    const userAssociatedPages = await this.pageService.getAllUserPages(user);
+  async getUserAssociatedPages(@GetUser() user: User) {
+    const userAssociatedPages = await this.pageService.getUserAssociatedPages(
+      user,
+    );
+
     return userAssociatedPages.map(parsePageForOutput);
   }
 
   @Get('/minimal')
   @UseGuards(JwtAuthGuard)
-  async getAllUserPagesForSidebar(@GetUser() user: User) {
-    const responsePages = await this.pageService.getAllUserPagesForSidebar(
-      user,
-    );
-
+  async getAllUserAssociatedPagesForSidebar(@GetUser() user: User) {
+    const responsePages = await this.pageService.getUserAssociatedPages(user);
     return responsePages.map((page) => parsePageForMinOutput(page, user));
   }
 
   @Get('/:pageId')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async getSinglePage(@GetPage() page: Page) {
+  async getPage(@GetPage() page: Page) {
     return parsePageForOutput(page);
   }
 
@@ -76,6 +76,7 @@ export class PagesController {
 
     return parsePageForOutput(page);
   }
+
   @Patch('/:pageId')
   @Roles('owner')
   @UseGuards(JwtAuthGuard, PageRolesGuard)

@@ -14,7 +14,7 @@ export class FindPageMiddleware implements NestMiddleware {
     const { path } = req;
     const pageId = extractIdFromPath(path, 'pages');
 
-    const page = await this.pageService.getSinglePage(pageId);
+    const page = await this.pageService.getPage(pageId);
     req.page = page;
     next();
   }

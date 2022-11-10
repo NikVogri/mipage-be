@@ -1,3 +1,4 @@
+import { parseMemberForMinOutput } from 'src/member/serializers/member.serializer';
 import {
   NotebookMinOutput,
   parseNotebookForMinOutput,
@@ -27,7 +28,7 @@ export interface OutputPage {
   };
 }
 
-export interface MinOutPutPage {
+export interface MinOutputPage {
   id: string;
   title: string;
   type: string;
@@ -53,11 +54,7 @@ export const parsePageForOutput = (page: Page): OutputPage => {
   };
 
   if (page.members?.length) {
-    output.members = page.members.slice(0, 3).map((member) => ({
-      id: member.id,
-      avatar: member.avatar,
-      username: member.username,
-    }));
+    output.members = page.members.map(parseMemberForMinOutput);
   }
 
   if (page.type === PageType.notebook) {
@@ -72,7 +69,7 @@ export const parsePageForOutput = (page: Page): OutputPage => {
 export const parsePageForMinOutput = (
   page: Page,
   user: User,
-): MinOutPutPage => {
+): MinOutputPage => {
   const output = {
     id: page.id,
     title: page.title,

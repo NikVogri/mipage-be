@@ -6,3 +6,9 @@ export const parseMemberForOutput = (member: User) => ({
   email: member.email,
   avatar: member.avatar,
 });
+
+export const parseMemberForMinOutput = (member: User) => ({
+  id: member.id,
+  username: member.username,
+  avatar: member.avatar,
+});
