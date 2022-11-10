@@ -19,7 +19,13 @@ export class NotificationRepository extends Repository<Notification> {
     return notification;
   }
 
-  async findNotViewedNotifications(user: User): Promise<Notification[]> {
+  async getNotification(notificationId: string) {
+    return await this.findOne(notificationId, {
+      relations: ['user'],
+    });
+  }
+
+  async findUnseenNotifications(user: User): Promise<Notification[]> {
     return await this.find({
       where: {
         user,
@@ -31,7 +37,7 @@ export class NotificationRepository extends Repository<Notification> {
     });
   }
 
-  async markNotificationViewed(
+  async markNotificationAsSeen(
     notification: Notification,
   ): Promise<Notification> {
     notification.viewed = true;
