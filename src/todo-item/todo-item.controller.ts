@@ -20,7 +20,10 @@ import { TodoItemService } from './todo-item.service';
 import { Roles } from 'src/page/roles.decorator';
 import { GetUser } from 'src/user/get-user.decorator';
 import { User } from 'src/user/user.entity';
-import { parseTodoItemForOutput } from './serializers/todo-item.serializer';
+import {
+  parseTodoItemForMinOutput,
+  parseTodoItemForOutput,
+} from './serializers/todo-item.serializer';
 import { Page } from 'src/page/page.entity';
 import { GetPage } from 'src/page/get-page.decorator';
 
@@ -32,21 +35,18 @@ export class TodoItemController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async createTodoItem(
-    @GetUser() creator: User,
+    @GetUser() user: User,
     @GetTodo() todo: Todo,
     @Body()
     createTodoItemDto: CreateTodoItemDto,
   ) {
-    const responseTodoItem = await this.todoItemService.createTodoItem(
+    const todoItem = await this.todoItemService.createTodoItem(
       todo,
-      creator,
+      user,
       createTodoItemDto,
     );
 
-    // explicitly set creator so it is not necessary to refetch creator data
-    responseTodoItem.creator = creator;
-
-    return parseTodoItemForOutput(responseTodoItem);
+    return parseTodoItemForOutput(todoItem);
   }
 
   @Get('/:todoItemId')

@@ -26,8 +26,8 @@ export class TodoItemService {
     );
   }
 
-  async getSingleTodoItem(todoId: string): Promise<TodoItem> {
-    const todoItem = await this.todoItemRepository.getSingleTodoItem(todoId);
+  async getTodoItem(todoId: string): Promise<TodoItem> {
+    const todoItem = await this.todoItemRepository.getTodoItem(todoId);
 
     if (!todoItem) {
       throw new NotFoundException(`Todo item with id ${todoId} does not exist`);

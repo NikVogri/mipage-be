@@ -14,7 +14,7 @@ export class FindTodoItemMiddleware implements NestMiddleware {
     const { path } = req;
     const todoItemId = extractIdFromPath(path, 'todo-items');
 
-    const todoItem = await this.todoItemService.getSingleTodoItem(todoItemId);
+    const todoItem = await this.todoItemService.getTodoItem(todoItemId);
 
     req.todoItem = todoItem;
     next();
