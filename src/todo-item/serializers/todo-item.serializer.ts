@@ -15,6 +15,13 @@ export interface TodoItemOutput {
   };
 }
 
+export interface MinTodoOutput {
+  id: string;
+  completed: boolean;
+  title: string;
+  createdAt: Date;
+}
+
 export const parseTodoItemForOutput = (todoItem: TodoItem): TodoItemOutput => {
   return {
     id: todoItem.id,
@@ -29,5 +36,16 @@ export const parseTodoItemForOutput = (todoItem: TodoItem): TodoItemOutput => {
       username: todoItem.creator?.username,
       avatar: todoItem.creator?.avatar,
     },
+  };
+};
+
+export const parseTodoItemForMinOutput = (
+  todoItem: TodoItem,
+): MinTodoOutput => {
+  return {
+    id: todoItem.id,
+    title: todoItem.title,
+    completed: todoItem.completed,
+    createdAt: todoItem.createdAt,
   };
 };
