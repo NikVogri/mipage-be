@@ -21,9 +21,6 @@ export class Todo {
   @Column({ default: '#cecece' })
   color: string;
 
-  @Column({ default: false })
-  allCompleted: boolean;
-
   @Column()
   pageId: string;
 
