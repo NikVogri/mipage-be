@@ -26,16 +26,13 @@ export class NotificationService {
     );
   }
 
-  async getNotifications(user: User) {
-    return await this.notificationRepository.findNotViewedNotifications(user);
+  async getUnseenNotifications(user: User) {
+    return await this.notificationRepository.findUnseenNotifications(user);
   }
 
   async getSingleNotification(notificationId: string) {
-    const notification = await this.notificationRepository.findOne(
+    const notification = await this.notificationRepository.getNotification(
       notificationId,
-      {
-        relations: ['user'],
-      },
     );
 
     if (!notification) {
@@ -47,19 +44,15 @@ export class NotificationService {
     return notification;
   }
 
-  async markNotificationViewed(notification: Notification, user: User) {
+  async markNotificationAsSeen(notification: Notification, user: User) {
     if (notification.user.id !== user.id) {
-      throw new ForbiddenException(
-        `You can't mark this notification as viewed`,
-      );
+      throw new ForbiddenException(`You can't mark this notification as seen`);
     }
 
     if (notification.viewed) {
-      throw new BadRequestException(
-        `This notification has already been viewed`,
-      );
+      throw new BadRequestException(`This notification has already been seen`);
     }
 
-    await this.notificationRepository.markNotificationViewed(notification);
+    await this.notificationRepository.markNotificationAsSeen(notification);
   }
 }

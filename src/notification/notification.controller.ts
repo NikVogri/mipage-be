@@ -12,17 +12,16 @@ export class NotificationController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getNotifications(@GetUser() user: User) {
-    return this.notificationService.getNotifications(user);
+  async getUnseenNotifications(@GetUser() user: User) {
+    return this.notificationService.getUnseenNotifications(user);
   }
 
   @Patch(':notificationId')
   @UseGuards(JwtAuthGuard)
-  async markNotificationViewed(
+  async markNotificationAsSeen(
     @GetNotification() notification: Notification,
     @GetUser() user: User,
   ) {
-    console.log(notification, user);
-    return this.notificationService.markNotificationViewed(notification, user);
+    return this.notificationService.markNotificationAsSeen(notification, user);
   }
 }
