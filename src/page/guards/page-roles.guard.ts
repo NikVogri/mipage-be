@@ -22,7 +22,7 @@ export class PageRolesGuard implements CanActivate {
     const user = req.user;
     const pageId = req.params.pageId;
 
-    const page = await this.pageService.getSinglePage(pageId);
+    const page = await this.pageService.getPage(pageId);
 
     let isAllowed = false;
     for (const role of roles) {

@@ -48,15 +48,7 @@ export class PageService {
     return this.pageRepository.getUserAssociatedPages(user);
   }
 
-  async getAllUserPages(user: User): Promise<Page[]> {
-    return await this.getUserAssociatedPages(user);
-  }
-
-  async getAllUserPagesForSidebar(user: User) {
-    return await this.getUserAssociatedPages(user);
-  }
-
-  async getSinglePage(pageId: string): Promise<Page> {
+  async getPage(pageId: string): Promise<Page> {
     const page = await this.pageRepository.getPageWithOwnerData(pageId);
 
     if (!page) {
