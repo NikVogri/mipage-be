@@ -4,7 +4,6 @@ export interface CreateTodoItemCommentOuput {
   body: string;
   id: string;
   createdAt: Date;
-  updatedAt: Date;
   todoItemId: string;
   author: {
     id: string;
@@ -20,7 +19,6 @@ export const parseCreateTodoItemCommentOutput = (
     body: todoItemComment.body,
     id: todoItemComment.id,
     createdAt: todoItemComment.createdAt,
-    updatedAt: todoItemComment.updatedAt,
     todoItemId: todoItemComment.todoItem?.id,
     author: {
       id: todoItemComment.author?.id,

@@ -28,8 +28,12 @@ export class TodoItemCommentService {
     return await this.todoItemRepository.count({ where: { todoItem } });
   }
 
-  async getTodoItemComments(todoItem: TodoItem, p: string, batch: string) {
-    const page = p ? parseInt(p) : 0;
+  async getTodoItemComments(
+    todoItem: TodoItem,
+    pageNum: string,
+    batch: string,
+  ) {
+    const page = pageNum ? parseInt(pageNum) : 0;
     let pageSize = batch ? parseInt(batch) : 10;
 
     // Limit to max 25 comments per request
@@ -44,8 +48,8 @@ export class TodoItemCommentService {
     );
 
     // add todoItem id to each item to avoid another DB relations query
-    return res.map((c) => ({
-      ...c,
+    return res.map((comment) => ({
+      ...comment,
       todoItem: {
         id: todoItem.id,
       },

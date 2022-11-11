@@ -35,9 +35,7 @@ export class TodoItemCommentController {
 
     return {
       total: totalComments,
-      comments: res.map((c: TodoItemComment) =>
-        parseCreateTodoItemCommentOutput(c),
-      ),
+      comments: res.map(parseCreateTodoItemCommentOutput),
     };
   }
 
