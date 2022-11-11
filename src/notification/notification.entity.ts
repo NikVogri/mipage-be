@@ -44,6 +44,6 @@ export class Notification {
   @Column('jsonb', { nullable: true })
   additionalData: object;
 
-  @ManyToOne(() => User, (user) => user.notifications)
+  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
   user: User;
 }
