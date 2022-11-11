@@ -35,7 +35,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Page, (page) => page.owner, { onDelete: 'NO ACTION' })
+  @OneToMany(() => Page, (page) => page.owner)
   ownedPages: Page[];
 
   @OneToMany(() => Notification, (notification) => notification.user, {
