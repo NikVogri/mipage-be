@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Post,
-  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +11,7 @@ import { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { UpdatePersonalInfoDto } from './dto/update-personal-info.dto';
 import { GetUser } from './get-user.decorator';
+import { parseUserForOutput } from './serializers/user.serializer';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -22,22 +22,21 @@ export class UserController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   getLoggedInUser(@GetUser() user: User) {
-    return user;
-  }
-
-  @Get('/find')
-  @UseGuards(JwtAuthGuard)
-  searchForUsers(@Query('q') query: string) {
-    return this.userService.getUsersWithQuery(query);
+    return parseUserForOutput(user);
   }
 
   @Post('/me/personal-info')
   @UseGuards(JwtAuthGuard)
-  updatePersonalInfo(
+  async updatePersonalInfo(
     @GetUser() user: User,
     @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
   ) {
-    return this.userService.updatePersonalInfo(user, updatePersonalInfoDto);
+    const responseUser = await this.userService.updatePersonalInfo(
+      user,
+      updatePersonalInfoDto,
+    );
+
+    return parseUserForOutput(responseUser);
   }
 
   @Delete('/me')
@@ -45,11 +44,6 @@ export class UserController {
   async deleteUser(@GetUser() user: User, @Res() response: Response) {
     await this.userService.deleteUser(user);
 
-    response
-      .cookie('mipage-auth', null, {
-        expires: new Date(Date.now() - 3600), // set expire to date in the past
-      })
-      .status(200)
-      .send({ success: true });
+    response.clearCookie('mipage-auth').status(200).send({ success: true });
   }
 }
