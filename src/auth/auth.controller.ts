@@ -28,19 +28,16 @@ export class AuthController {
     @Res() response: Response,
     @Body() authLoginCredentialsDto: AuthLoginCredentialsDto,
   ) {
-    const expiryLengthInMs = 86400000 * 30; // 30 days
-
     const token = await this.authService.token(authLoginCredentialsDto);
     const isProd = this.configService.get('STAGE') === 'prod';
 
     response
       .cookie('mipage-auth', token, {
         httpOnly: true,
-        domain: isProd ? 'api.mipage.me' : undefined,
-        expires: new Date(Date.now() + expiryLengthInMs),
+        domain: isProd ? this.configService.get('COOKIE_DOMAIN') : undefined,
+        maxAge: 1000 * 60 * 60 * 24 * 31, // 31 days
         secure: isProd,
-        path: '/',
-        sameSite: isProd ? 'strict' : 'lax',
+        sameSite: 'strict',
       })
       .status(200)
       .send({ success: true });
@@ -48,7 +45,14 @@ export class AuthController {
 
   @Post('/logout')
   async logout(@Res() response: Response) {
-    response.clearCookie('mipage-auth').status(200).send({ success: true });
+    const isProd = this.configService.get('STAGE') === 'prod';
+
+    response
+      .clearCookie('mipage-auth', {
+        domain: isProd ? this.configService.get('COOKIE_DOMAIN') : undefined,
+      })
+      .status(200)
+      .send({ success: true });
   }
 
   @Post('/forgot-password')
