@@ -5,6 +5,8 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { IsXssSafe } from 'src/validators/xss-validator';
+
 export class AuthRegisterCredentialsDto {
   @IsEmail()
   email: string;
@@ -12,6 +14,7 @@ export class AuthRegisterCredentialsDto {
   @IsString()
   @MinLength(5)
   @MaxLength(50)
+  @IsXssSafe({ message: 'Invalid characters provided in username field' })
   username: string;
 
   @MinLength(8)
