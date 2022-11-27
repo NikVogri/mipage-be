@@ -42,7 +42,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "^0.2.41",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "@nestjs/schematics": "^8.0.0",
