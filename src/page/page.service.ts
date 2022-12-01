@@ -20,11 +20,11 @@ export class PageService {
 
   async createPage(createPageDto: CreatePageDto, owner: User): Promise<Page> {
     // TODO: remove this after notebook page is correctly implemented
-    if (createPageDto.type === PageType.notebook) {
-      throw new ForbiddenException(
-        'You are not allowed to create a notebook page at this time.',
-      );
-    }
+    // if (createPageDto.type === PageType.notebook) {
+    //   throw new ForbiddenException(
+    //     'You are not allowed to create a notebook page at this time.',
+    //   );
+    // }
 
     const page = await this.pageRepository.createPage(createPageDto, owner);
 
