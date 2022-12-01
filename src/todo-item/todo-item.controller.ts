@@ -20,10 +20,7 @@ import { TodoItemService } from './todo-item.service';
 import { Roles } from 'src/page/roles.decorator';
 import { GetUser } from 'src/user/get-user.decorator';
 import { User } from 'src/user/user.entity';
-import {
-  parseTodoItemForMinOutput,
-  parseTodoItemForOutput,
-} from './serializers/todo-item.serializer';
+import { parseTodoItemForOutput } from './serializers/todo-item.serializer';
 import { Page } from 'src/page/page.entity';
 import { GetPage } from 'src/page/get-page.decorator';
 
