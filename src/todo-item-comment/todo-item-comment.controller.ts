@@ -10,7 +10,6 @@ import { GetUser } from 'src/user/get-user.decorator';
 import { User } from 'src/user/user.entity';
 import { CreateTodoItemCommentDto } from './dto/create-todo-item-comment.dto';
 import { parseCreateTodoItemCommentOutput } from './serializers/todo-item-comment.serializer';
-import { TodoItemComment } from './todo-item-comment.entity';
 import { TodoItemCommentService } from './todo-item-comment.service';
 
 @Controller('/pages/:pageId/todo-items/:todoItemId/comments')
