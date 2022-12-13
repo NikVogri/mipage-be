@@ -28,7 +28,12 @@ export class NotebookBlockService {
   }
 
   async getAllNotebookBlocks(notebook: Notebook) {
-    return await this.notebookBlockRepository.find({ notebook });
+    return await this.notebookBlockRepository.find({
+      where: { notebook },
+      order: {
+        createdAt: 'ASC',
+      },
+    });
   }
 
   async createNotebookBlock(
