@@ -22,7 +22,7 @@ export class PageRepository extends Repository<Page> {
 
   async getPageWithOwnerData(pageId: string): Promise<Page> {
     return await this.findOne(pageId, {
-      relations: ['owner', 'members'],
+      relations: ['owner', 'members', 'notebooks'],
     });
   }
 
