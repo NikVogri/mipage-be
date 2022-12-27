@@ -10,6 +10,7 @@ import { UpdateNotebookDto } from './dto/update-notebook.dto';
 import { GetNotebook } from './get-notebook.decorator';
 import { Notebook } from './notebook.entity';
 import { NotebookService } from './notebook.service';
+import { parseNotebookForOutput } from './serializers/notebook.serializer';
 
 @Controller({ path: '/pages/:pageId/notebooks' })
 export class NotebookController {
@@ -49,13 +50,6 @@ export class NotebookController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async getSingleNotebook(@GetNotebook() notebook: Notebook) {
-    const notebookBlocks = await this.notebookBlockService.getAllNotebookBlocks(
-      notebook,
-    );
-
-    return {
-      ...notebook,
-      blocks: notebookBlocks,
-    };
+    return parseNotebookForOutput(notebook);
   }
 }
