@@ -21,6 +21,9 @@ export class Notebook {
   @Column({ nullable: true })
   banner: string;
 
+  @Column('simple-array', { nullable: true })
+  order: string[];
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -14,12 +14,17 @@ export class NotebookBlockRepository extends Repository<NotebookBlock> {
     notebook: Notebook,
     createNotebookBlockDto: CreateNotebookBlockDto,
   ): Promise<NotebookBlock> {
-    const { type } = createNotebookBlockDto;
-    const notebookBlock = this.create({ content: '', type, notebook });
+    // For some reason TypeOrm does not support inserting rows that have relationships with ID, instead
+    // it requires relationship entity instance.
+    // Because of the reason mentioned above an issue occurs where the new record has 'notebookId' field
+    // empty when the 'notebook' entity instance is passed directly. Deleting 'blocks' array solves this issue.
+    delete notebook.blocks;
 
-    await this.save(notebookBlock);
-    delete notebookBlock.notebook;
-    return notebookBlock;
+    return await this.save({
+      content: '',
+      type: createNotebookBlockDto.type,
+      notebook,
+    });
   }
 
   async updateNotebookBlock(
