@@ -21,7 +21,7 @@ export class NotebookBlockOrderService {
     notebook: Notebook,
     blockId: string,
     prevBlockId?: string,
-  ): Promise<void> {
+  ): Promise<string[]> {
     const order = notebook.order ? [...notebook.order] : [];
     let targetIndex = order.length;
 
@@ -34,6 +34,8 @@ export class NotebookBlockOrderService {
 
     order.splice(targetIndex, 0, blockId);
     await this.updateOrder(notebook, order);
+
+    return order;
   }
 
   async removeBlock(

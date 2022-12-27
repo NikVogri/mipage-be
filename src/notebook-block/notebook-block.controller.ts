@@ -17,6 +17,7 @@ import { UpdateNotebookBlockDto } from './dto/update-notebook-block.dto';
 import { GetNotebookBlock } from './get-notebook-block.decorator';
 import { NotebookBlock } from './notebook-block.entity';
 import { NotebookBlockService } from './notebook-block.service';
+import { parseNotebookBlockForOutput } from './serializers/notebook-block.serializer';
 
 @Controller('/pages/:pageId/notebooks/:notebookId/notebook-blocks')
 export class NotebookBlockController {
@@ -36,10 +37,16 @@ export class NotebookBlockController {
     @GetNotebook() notebook: Notebook,
     @Body() createNotebookBlockDto: CreateNotebookBlockDto,
   ) {
-    return this.notebookBlockService.createNotebookBlock(
-      notebook,
-      createNotebookBlockDto,
-    );
+    const { block, order } =
+      await this.notebookBlockService.createNotebookBlock(
+        notebook,
+        createNotebookBlockDto,
+      );
+
+    return {
+      block: parseNotebookBlockForOutput(block),
+      order: order,
+    };
   }
 
   @Delete('/:noteblockId')
