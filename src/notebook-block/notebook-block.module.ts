@@ -8,6 +8,7 @@ import { NotebookRepository } from 'src/notebook/notebook.repository';
 import { PageRepository } from 'src/page/page.repository';
 import { NotebookBlockRepository } from './notebook-block.repository';
 import { FindNotebookBlockMiddleware } from 'src/middleware/get-notebook-block.middleware';
+import { NotebookBlockOrderService } from 'src/notebook-block-order/notebook-block-order.service';
 
 @Module({
   imports: [
@@ -17,7 +18,12 @@ import { FindNotebookBlockMiddleware } from 'src/middleware/get-notebook-block.m
       PageRepository,
     ]),
   ],
-  providers: [NotebookBlockService, PageService, NotebookService],
+  providers: [
+    NotebookBlockService,
+    PageService,
+    NotebookService,
+    NotebookBlockOrderService,
+  ],
   controllers: [NotebookBlockController],
 })
 export class NotebookBlockModule {

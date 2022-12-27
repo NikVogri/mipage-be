@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FindNotebookMiddleware } from 'src/middleware/get-notebok.middleware';
+import { NotebookBlockOrderService } from 'src/notebook-block-order/notebook-block-order.service';
 import { NotebookBlockRepository } from 'src/notebook-block/notebook-block.repository';
 import { NotebookBlockService } from 'src/notebook-block/notebook-block.service';
 import { PagesModule } from 'src/page/page.module';
@@ -18,7 +19,7 @@ import { NotebookService } from './notebook.service';
     TypeOrmModule.forFeature([NotebookRepository, NotebookBlockRepository]),
     forwardRef(() => PagesModule),
   ],
-  providers: [NotebookService, NotebookBlockService],
+  providers: [NotebookService, NotebookBlockService, NotebookBlockOrderService],
   controllers: [NotebookController],
   exports: [NotebookService],
 })

@@ -16,6 +16,7 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { LogModule } from './log/log.module';
 import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.module';
 import { EmailModule } from './email/email.module';
+import { NotebookBlockOrderModule } from './notebook-block-order/notebook-block-order.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { EmailModule } from './email/email.module';
     TodoItemModule,
     MemberModule,
     NotebookBlockModule,
+    NotebookBlockOrderModule,
     NotificationModule,
     LogModule,
     TodoItemCommentModule,
