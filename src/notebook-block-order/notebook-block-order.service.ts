@@ -17,7 +17,11 @@ export class NotebookBlockOrderService {
     });
   }
 
-  async addBlock(notebook: Notebook, blockId: string, prevBlockId?: string) {
+  async addBlock(
+    notebook: Notebook,
+    blockId: string,
+    prevBlockId?: string,
+  ): Promise<void> {
     const order = notebook.order ? [...notebook.order] : [];
     let targetIndex = order.length;
 
@@ -30,5 +34,15 @@ export class NotebookBlockOrderService {
 
     order.splice(targetIndex, 0, blockId);
     await this.updateOrder(notebook, order);
+  }
+
+  async removeBlock(
+    notebook: Notebook,
+    notebookBlockId: string,
+  ): Promise<void> {
+    let order = notebook.order ? [...notebook.order] : [];
+    order = order.filter((id) => id !== notebookBlockId);
+
+    this.updateOrder(notebook, order);
   }
 }

@@ -45,7 +45,9 @@ export class NotebookService {
   }
 
   async getSingleNotebook(notebookId: string): Promise<Notebook> {
-    const notebook = await this.notebookRepository.findOne(notebookId);
+    const notebook = await this.notebookRepository.findOne(notebookId, {
+      relations: ['blocks'],
+    });
 
     if (!notebook) {
       throw new NotFoundException(

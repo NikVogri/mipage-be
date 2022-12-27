@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotebookBlockOrderService } from 'src/notebook-block-order/notebook-block-order.service';
 import { Notebook } from 'src/notebook/notebook.entity';
 import { CreateNotebookBlockDto } from './dto/create-notebook-block.dto';
 import { UpdateNotebookBlockDto } from './dto/update-notebook-block.dto';
@@ -11,6 +12,7 @@ export class NotebookBlockService {
   constructor(
     @InjectRepository(NotebookBlockRepository)
     private notebookBlockRepository: NotebookBlockRepository,
+    private notebookBlockOrderService: NotebookBlockOrderService,
   ) {}
 
   async getSingleNotebookBlock(noteblockId: string) {
@@ -40,14 +42,27 @@ export class NotebookBlockService {
     notebook: Notebook,
     createNotebookBlockDto: CreateNotebookBlockDto,
   ) {
-    return await this.notebookBlockRepository.createNotebookBlock(
+    const notebookBlock =
+      await this.notebookBlockRepository.createNotebookBlock(
+        notebook,
+        createNotebookBlockDto,
+      );
+
+    await this.notebookBlockOrderService.addBlock(
       notebook,
-      createNotebookBlockDto,
+      notebookBlock.id,
+      createNotebookBlockDto.previousBlockId,
     );
+
+    return notebookBlock;
   }
 
-  async deleteNotebookBlock(notebookBlock: NotebookBlock) {
+  async deleteNotebookBlock(notebook: Notebook, notebookBlock: NotebookBlock) {
     await this.notebookBlockRepository.remove(notebookBlock);
+    await this.notebookBlockOrderService.removeBlock(
+      notebook,
+      notebookBlock.id,
+    );
   }
 
   async updateNotebookBlock(
