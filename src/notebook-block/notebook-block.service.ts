@@ -48,13 +48,16 @@ export class NotebookBlockService {
         createNotebookBlockDto,
       );
 
-    await this.notebookBlockOrderService.addBlock(
+    const newOrder = await this.notebookBlockOrderService.addBlock(
       notebook,
       notebookBlock.id,
       createNotebookBlockDto.previousBlockId,
     );
 
-    return notebookBlock;
+    return {
+      block: notebookBlock,
+      order: newOrder,
+    };
   }
 
   async deleteNotebookBlock(notebook: Notebook, notebookBlock: NotebookBlock) {
