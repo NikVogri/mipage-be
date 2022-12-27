@@ -1,4 +1,4 @@
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsUUID, IsOptional } from 'class-validator';
 import { NotebookBlockType } from '../notebook-block.entity';
 
 export class CreateNotebookBlockDto {
@@ -6,4 +6,8 @@ export class CreateNotebookBlockDto {
     message: "type must be one of the following: 'image', 'richText', 'code'",
   })
   type: NotebookBlockType;
+
+  @IsOptional()
+  @IsUUID()
+  previousBlockId: string;
 }

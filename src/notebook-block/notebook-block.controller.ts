@@ -25,7 +25,7 @@ export class NotebookBlockController {
   @Get()
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async getAllNotebookBlocks(@GetNotebook() notebook: Notebook) {
+  async(@GetNotebook() notebook: Notebook) {
     return this.notebookBlockService.getAllNotebookBlocks(notebook);
   }
 
@@ -45,8 +45,14 @@ export class NotebookBlockController {
   @Delete('/:noteblockId')
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
-  async deleteNotebookBlock(@GetNotebookBlock() notebookBlock: NotebookBlock) {
-    return this.notebookBlockService.deleteNotebookBlock(notebookBlock);
+  async deleteNotebookBlock(
+    @GetNotebook() notebook: Notebook,
+    @GetNotebookBlock() notebookBlock: NotebookBlock,
+  ) {
+    return this.notebookBlockService.deleteNotebookBlock(
+      notebook,
+      notebookBlock,
+    );
   }
 
   @Patch('/:noteblockId')
