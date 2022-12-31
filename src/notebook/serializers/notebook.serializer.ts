@@ -1,3 +1,4 @@
+import { parseNotebookBlockForOutput } from 'src/notebook-block/serializers/notebook-block.serializer';
 import { Notebook } from '../notebook.entity';
 
 export interface NotebookMinOutput {
@@ -19,7 +20,7 @@ export const parseNotebookForOutput = (notebook: Notebook) => {
     id: notebook.id,
     banner: null, // TODO: set as an actual value when implemented
     order: notebook.order,
-    blocks: notebook.blocks,
+    blocks: notebook.blocks.map(parseNotebookBlockForOutput),
     title: notebook.title,
   };
 };
