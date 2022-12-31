@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotebookBlockOrderService } from 'src/notebook-block-order/notebook-block-order.service';
 import { Notebook } from 'src/notebook/notebook.entity';
+import { EntityManager, getConnection } from 'typeorm';
 import { CreateNotebookBlockDto } from './dto/create-notebook-block.dto';
 import { UpdateNotebookBlockDto } from './dto/update-notebook-block.dto';
 import { NotebookBlock } from './notebook-block.entity';
@@ -48,7 +53,7 @@ export class NotebookBlockService {
         createNotebookBlockDto,
       );
 
-    const newOrder = await this.notebookBlockOrderService.addBlock(
+    const newOrder = await this.notebookBlockOrderService.addBlockToOrder(
       notebook,
       notebookBlock.id,
       createNotebookBlockDto.previousBlockId,
@@ -61,11 +66,26 @@ export class NotebookBlockService {
   }
 
   async deleteNotebookBlock(notebook: Notebook, notebookBlock: NotebookBlock) {
-    await this.notebookBlockRepository.remove(notebookBlock);
-    await this.notebookBlockOrderService.removeBlock(
-      notebook,
-      notebookBlock.id,
-    );
+    const removedBlockId = notebookBlock.id;
+
+    const queryRunner = getConnection().createQueryRunner();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager
+        .getRepository(NotebookBlock)
+        .remove(notebookBlock);
+
+      await queryRunner.manager.getRepository(Notebook).update(notebook.id, {
+        order: notebook.order.filter((id) => id !== removedBlockId),
+      });
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateNotebookBlock(

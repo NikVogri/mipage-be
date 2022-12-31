@@ -17,7 +17,7 @@ export class NotebookBlockOrderService {
     });
   }
 
-  async addBlock(
+  async addBlockToOrder(
     notebook: Notebook,
     blockId: string,
     prevBlockId?: string,
@@ -36,15 +36,5 @@ export class NotebookBlockOrderService {
     await this.updateOrder(notebook, order);
 
     return order;
-  }
-
-  async removeBlock(
-    notebook: Notebook,
-    notebookBlockId: string,
-  ): Promise<void> {
-    let order = notebook.order ? [...notebook.order] : [];
-    order = order.filter((id) => id !== notebookBlockId);
-
-    this.updateOrder(notebook, order);
   }
 }
