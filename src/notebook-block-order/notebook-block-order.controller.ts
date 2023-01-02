@@ -16,11 +16,12 @@ export class NotebookBlockOrderController {
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async updateNotebookBlockOrder(
     @GetNotebook() notebook: Notebook,
-    @Body() updateNotebookBlockOrderDto: UpdateNotebookBlockOrderDto,
+    @Body() { movedBlockId, previousBlockId }: UpdateNotebookBlockOrderDto,
   ) {
-    await this.notebookOrderService.updateOrder(
+    return await this.notebookOrderService.changeBlockPosition(
       notebook,
-      updateNotebookBlockOrderDto.order,
+      movedBlockId,
+      previousBlockId,
     );
   }
 }
