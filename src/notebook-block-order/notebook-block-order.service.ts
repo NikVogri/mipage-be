@@ -46,6 +46,10 @@ export class NotebookBlockOrderService {
   ) {
     const order = notebook.order ? [...notebook.order] : [];
 
+    if (movedBlockId === previousBlockId) {
+      throw new BadRequestException();
+    }
+
     const currBlockIndex = order.findIndex((id) => id === movedBlockId);
     const prevBlockIndex = order.findIndex((id) => id === previousBlockId);
 
