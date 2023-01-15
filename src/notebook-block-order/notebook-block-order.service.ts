@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotebookRepository } from 'src/notebook/notebook.repository';
 import { Notebook } from 'src/notebook/notebook.entity';
-import { UpdateNotebookBlockOrderDto } from './dto/update-notebook-block-order.dto';
 
 @Injectable()
 export class NotebookBlockOrderService {
@@ -44,7 +43,7 @@ export class NotebookBlockOrderService {
     movedBlockId: string,
     previousBlockId: string,
   ) {
-    const order = notebook.order ? [...notebook.order] : [];
+    let order = notebook.order ? [...notebook.order] : [];
 
     if (movedBlockId === previousBlockId) {
       throw new BadRequestException();
@@ -57,8 +56,10 @@ export class NotebookBlockOrderService {
       throw new BadRequestException();
     }
 
-    order.splice(currBlockIndex, 1); // Remove block ID from array
+    order.splice(currBlockIndex, 1, null); // Replace moved ID with temporary null value
     order.splice(prevBlockIndex + 1, 0, movedBlockId); // Place block ID in correct spot
+    order = order.filter((order) => order); // Remove temporary null value
+
     await this.updateOrder(notebook, order);
 
     return order;
