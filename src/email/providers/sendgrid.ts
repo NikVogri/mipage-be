@@ -20,7 +20,7 @@ export class SendGrid implements IEmailProvider {
         },
       ],
       from: {
-        email: 'no-reply@mipage.me',
+        email: 'no-reply@mipage.net',
         name: 'Mipage',
       },
       subject: data.subject,
