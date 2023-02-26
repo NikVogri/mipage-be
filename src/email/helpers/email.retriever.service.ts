@@ -45,7 +45,7 @@ export class EmailRetriever {
           replacements: {
             title: 'You have a notification waiting',
             body: 'New notification is available',
-            url: 'https://mipage.com',
+            url: 'https://mipage.net',
             url_description: 'Go to Mipage',
           } as T,
         };
