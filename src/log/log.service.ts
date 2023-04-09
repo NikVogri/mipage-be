@@ -10,6 +10,7 @@ import { isEmpty } from 'lodash';
 import { ConfigService } from '@nestjs/config';
 
 export interface HttpLog {
+  user?: string;
   timestamp: string;
   origin?: string;
   statusCode?: number;
@@ -22,7 +23,6 @@ export interface HttpLog {
     query?: object;
   };
   output: object;
-  user?: string;
   error?: {
     stack: string;
     message: string;
@@ -69,19 +69,24 @@ export class LogService {
       }
     });
 
+    if (Object.keys(request['body']).length > 0) {
+      this.log.input['body'] = Object.keys(request['body']);
+    }
+
     return this;
   }
 
   private setUser(request: Request) {
+    this.log.user = null;
+
     if (request.user) {
       this.log.user = (request.user as User).id;
     }
 
     if (request.headers?.authorization?.includes('Bearer')) {
-      const jwt = decode(
-        request.headers.authorization.split(' ')[1],
-      ) as JwtPayload;
-      this.log.user = jwt?.id ? jwt.id : null;
+      const token = request.headers.authorization.split(' ')[1];
+      const jwtPayload = decode(token) as JwtPayload;
+      this.log.user = jwtPayload?.id ? jwtPayload.id : null;
     }
 
     return this;
