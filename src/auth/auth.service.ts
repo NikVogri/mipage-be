@@ -35,7 +35,7 @@ export class AuthService {
     };
 
     return this.jwtService.sign(jwtPayload, {
-      expiresIn: '30 days',
+      expiresIn: '182 days',
     });
   }
 

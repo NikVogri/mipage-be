@@ -35,7 +35,7 @@ export class AuthController {
       .cookie('mipage-auth', token, {
         httpOnly: true,
         domain: isProd ? this.configService.get('COOKIE_DOMAIN') : undefined,
-        maxAge: 1000 * 60 * 60 * 24 * 31, // 31 days
+        maxAge: 1000 * 60 * 60 * 24 * 182, // 182 days
         secure: isProd,
         sameSite: 'strict',
       })
