@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Template, TEMPLATE } from '../models';
 
 // Email Providers
+import { SendInBlue } from '../providers/sendinblue';
 import { SendGrid } from '../providers/sendgrid';
 
 // Templates
@@ -17,6 +18,8 @@ export class EmailRetriever {
     const provider = this.config.get('EMAIL_PROVIDER');
 
     switch (provider) {
+      case 'sendinblue':
+        return new SendInBlue(this.config.get('SEND_IN_BLUE_API_KEY'));
       case 'sendgrid':
         return new SendGrid(this.config.get('SENDGRID_API_KEY'));
       default:
