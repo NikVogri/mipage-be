@@ -8,6 +8,12 @@ import { Logger } from '@nestjs/common';
 import { User } from 'src/user/user.entity';
 import { isEmpty } from 'lodash';
 import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
+
+export enum ERROR_TYPE {
+  UNSPECIFIED = 'UNSPECIFIED',
+  AXIOS = 'AXIOS',
+}
 
 export interface HttpLog {
   user?: string;
@@ -24,6 +30,7 @@ export interface HttpLog {
   };
   output: object;
   error?: {
+    type: ERROR_TYPE;
     stack: string;
     message: string;
   };
@@ -103,9 +110,15 @@ export class LogService {
 
   public logError(error: Error, additionalPayload?: any) {
     this.log.error = {
+      type: ERROR_TYPE.UNSPECIFIED,
       message: error.message,
       stack: error.stack,
     };
+
+    if (axios.isAxiosError(error)) {
+      this.log.error.type === ERROR_TYPE.AXIOS;
+      this.log.error.stack = error.response?.data ?? error;
+    }
 
     if (additionalPayload) {
       this.log.additionalPayload = additionalPayload;
