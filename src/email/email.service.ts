@@ -6,9 +6,14 @@ import {
   PasswordResetEmailTemplateReplacers,
   AddedToPageEmailTemplateReplacers,
 } from './models';
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { EmailTemplateFormatter } from './helpers/email-template-formatter.service';
 import { EmailRetriever } from './helpers/email.retriever.service';
+import { LogService } from 'src/log/log.service';
 
 @Injectable()
 export class EmailService {
@@ -19,6 +24,8 @@ export class EmailService {
     private emailTemplateFormatter: EmailTemplateFormatter,
     @Inject(EmailRetriever)
     private emailRetriever: EmailRetriever,
+    @Inject(LogService)
+    private logService: LogService,
   ) {
     this.emailProvider = this.emailRetriever.getEmailProvider();
   }
@@ -34,7 +41,12 @@ export class EmailService {
       template: template,
     };
 
-    await this.emailProvider.send(payload);
+    try {
+      await this.emailProvider.send(payload);
+    } catch (err) {
+      this.logService.logError(err).save();
+      throw new InternalServerErrorException();
+    }
   }
 
   async sendWelcome(toEmail: string, username: string): Promise<void> {

@@ -38,14 +38,10 @@ export class SendGrid implements IEmailProvider {
     const url = this.apiUrl + '/mail/send';
     const payload = this.buildPayload(data);
 
-    try {
-      await axios.post(url, payload, {
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    await axios.post(url, payload, {
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+    });
   }
 }

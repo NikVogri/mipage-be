@@ -100,6 +100,8 @@ export class LogService {
   }
 
   public logSuccess(additionalPayload?: any) {
+    if (!this.log) this.buildTemplate();
+
     if (additionalPayload) {
       this.log.additionalPayload = additionalPayload;
     }
@@ -109,6 +111,8 @@ export class LogService {
   }
 
   public logError(error: Error, additionalPayload?: any) {
+    if (!this.log) this.buildTemplate();
+
     this.log.error = {
       type: ERROR_TYPE.UNSPECIFIED,
       message: error.message,
@@ -116,7 +120,7 @@ export class LogService {
     };
 
     if (axios.isAxiosError(error)) {
-      this.log.error.type === ERROR_TYPE.AXIOS;
+      this.log.error.type = ERROR_TYPE.AXIOS;
       this.log.error.stack = error.response?.data ?? error;
     }
 
