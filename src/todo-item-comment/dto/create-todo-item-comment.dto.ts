@@ -7,9 +7,6 @@ export class CreateTodoItemCommentDto {
   @MaxLength(4096)
   @IsXssSafe({
     allowedTags: {
-      h1: [],
-      h2: [],
-      h3: [],
       p: [],
       br: [],
       u: [],
