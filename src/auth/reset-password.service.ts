@@ -30,15 +30,6 @@ export class ResetPasswordService {
       return null;
     }
 
-    // If old token exists it should be deleted so a new one can take it's place
-    const oldToken = await this.resetPasswordRepository.getTokenByUserId(
-      user.id,
-    );
-
-    if (oldToken) {
-      await this.resetPasswordRepository.delete(oldToken);
-    }
-
     const token = await this.resetPasswordRepository.savePasswordResetToken(
       user.id,
     );
