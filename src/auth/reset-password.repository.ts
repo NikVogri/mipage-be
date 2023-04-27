@@ -12,12 +12,16 @@ export class ResetPasswordRepository extends Repository<ResetPasswordToken> {
   async savePasswordResetToken(userId: string): Promise<string> {
     const token = this.generateRandomToken();
 
-    const resetTokenRecord = this.create({
-      token: token,
-      userId,
-    });
-
-    await this.save(resetTokenRecord);
+    await this.upsert(
+      [
+        {
+          token: token,
+          userId: userId,
+          createdAt: new Date(),
+        },
+      ],
+      ['userId'],
+    );
 
     return token;
   }
