@@ -1,6 +1,13 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { NotebookBlockService } from 'src/notebook-block/notebook-block.service';
 import { GetPage } from 'src/page/get-page.decorator';
 import { PageRolesGuard } from 'src/page/guards/page-roles.guard';
 import { Page } from 'src/page/page.entity';
@@ -14,10 +21,7 @@ import { parseNotebookForOutput } from './serializers/notebook.serializer';
 
 @Controller({ path: '/pages/:pageId/notebooks' })
 export class NotebookController {
-  constructor(
-    private notebookService: NotebookService,
-    private notebookBlockService: NotebookBlockService,
-  ) {}
+  constructor(private notebookService: NotebookService) {}
 
   @Get()
   @Roles('owner', 'member')
@@ -50,6 +54,18 @@ export class NotebookController {
   @Roles('owner', 'member')
   @UseGuards(JwtAuthGuard, PageRolesGuard)
   async getSingleNotebook(@GetNotebook() notebook: Notebook) {
+    return parseNotebookForOutput(notebook);
+  }
+
+  @Get('/:notebookId/public')
+  async getSingleNotebookPublic(
+    @GetPage() page: Page,
+    @GetNotebook() notebook: Notebook,
+  ) {
+    if (page.private) {
+      throw new ForbiddenException();
+    }
+
     return parseNotebookForOutput(notebook);
   }
 }
