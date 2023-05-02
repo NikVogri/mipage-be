@@ -49,7 +49,7 @@ export class UserRespository extends Repository<User> {
   }
 
   async getUserById(id: string): Promise<User> {
-    return await this.findOne(id);
+    return await this.findOne({ id });
   }
 
   async updatePersonalInfo(

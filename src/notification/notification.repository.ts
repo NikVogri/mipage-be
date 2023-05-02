@@ -20,9 +20,12 @@ export class NotificationRepository extends Repository<Notification> {
   }
 
   async getNotification(notificationId: string) {
-    return await this.findOne(notificationId, {
-      relations: ['user'],
-    });
+    return await this.findOne(
+      { id: notificationId },
+      {
+        relations: ['user'],
+      },
+    );
   }
 
   async findUnseenNotifications(user: User): Promise<Notification[]> {
