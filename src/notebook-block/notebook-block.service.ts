@@ -21,9 +21,9 @@ export class NotebookBlockService {
   ) {}
 
   async getSingleNotebookBlock(noteblockId: string) {
-    const notebookBlock = await this.notebookBlockRepository.findOne(
-      noteblockId,
-    );
+    const notebookBlock = await this.notebookBlockRepository.findOne({
+      id: noteblockId,
+    });
 
     if (!notebookBlock) {
       throw new NotFoundException(
