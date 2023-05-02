@@ -16,6 +16,10 @@ export class PagesModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(FindPageMiddleware)
-      .forRoutes({ method: RequestMethod.ALL, path: '/pages/:pageId*' });
+      .exclude({ path: '/pages/minimal', method: RequestMethod.GET })
+      .forRoutes({
+        method: RequestMethod.ALL,
+        path: '/pages/:pageId*',
+      });
   }
 }
