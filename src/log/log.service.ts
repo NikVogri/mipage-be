@@ -1,4 +1,4 @@
-import { Injectable, Response } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogRepository } from './log.repository';
 import { Request } from 'express';
@@ -11,8 +11,8 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 export enum ERROR_TYPE {
-  UNSPECIFIED = 'UNSPECIFIED',
   AXIOS = 'AXIOS',
+  HTTP = 'HTTP',
 }
 
 export interface HttpLog {
@@ -65,7 +65,10 @@ export class LogService {
   }
 
   public setOutput(output: any) {
-    this.log.output = output;
+    if (output && typeof output === 'object') {
+      this.log.output = Object.keys(output);
+    }
+
     return this;
   }
 
@@ -114,7 +117,7 @@ export class LogService {
     if (!this.log) this.buildTemplate();
 
     this.log.error = {
-      type: ERROR_TYPE.UNSPECIFIED,
+      type: ERROR_TYPE.HTTP,
       message: error.message,
       stack: error.stack,
     };
