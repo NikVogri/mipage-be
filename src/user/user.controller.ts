@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Res,
   UseGuards,
@@ -45,5 +46,21 @@ export class UserController {
     await this.userService.deleteUser(user);
 
     response.clearCookie('mipage-auth').status(200).send({ success: true });
+  }
+
+  @Get('/:userId/profile')
+  async getUserProfile(
+    @Param('userId') userId: string,
+    @Res() response: Response,
+  ) {
+    const user = await this.userService.getSingleUser(userId);
+
+    response.setHeader(`Cache-Control`, `public, max-age=${60 * 60}`).send({
+      id: user.id,
+      username: user.username,
+      bio: user.bio,
+      avatar: user.avatar,
+      joinedAt: user.createdAt,
+    });
   }
 }
