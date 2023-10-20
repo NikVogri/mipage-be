@@ -17,6 +17,7 @@ import { LogModule } from './log/log.module';
 import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.module';
 import { EmailModule } from './email/email.module';
 import { NotebookBlockOrderModule } from './notebook-block-order/notebook-block-order.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { NotebookBlockOrderModule } from './notebook-block-order/notebook-block-
     TodoItemCommentModule,
     EmailModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     Logger,
     {
