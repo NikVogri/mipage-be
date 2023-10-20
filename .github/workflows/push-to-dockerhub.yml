@@ -1,23 +1,21 @@
 name: push-to-dockerhub
 
-on:
-  push:
-    branches: [ master, develop ]
+on: 
+  workflow_dispatch:
+    inputs:
+      tag: 
+        description: docker tag
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: docker build -t infase/mipage-be:prod .
-      if: github.ref == 'refs/heads/master'
-    - run: docker build -t infase/mipage-be:dev .
-      if: github.ref == 'refs/heads/develop'
+    - run: docker build -t ${{inputs.tag}} .
     - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    - run: docker push infase/mipage-be:prod
-      if: github.ref == 'refs/heads/master'
-    - run: docker push infase/mipage-be:dev
-      if: github.ref == 'refs/heads/develop'
+    - run: docker push ${{inputs.tag}}

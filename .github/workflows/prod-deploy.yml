@@ -1,0 +1,22 @@
+name: prod-deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push to Dockerhub
+        uses: aurelien-baudet/workflow-dispatch@v2
+        with:
+          workflow: push-to-dockerhub
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          inputs: '{"tag": "infase/mipage-be:prod"}'
+      - name: Deploy to Dokku
+        uses: aurelien-baudet/workflow-dispatch@v2
+        with:
+          workflow: deploy-to-dokku
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          inputs: '{"tag": "infase/mipage-be:prod", "dokku_tag": "dokku/mipage-api:prod", "stage": "prod"}'

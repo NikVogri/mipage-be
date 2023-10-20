@@ -1,0 +1,36 @@
+name: deploy-to-dokku
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag: 
+        description: docker tag
+        required: true
+        type: string
+      dokku_tag: 
+        description: dokku container tag
+        required: true
+        type: string
+      stage: 
+        description: dokku stage
+        options:
+          - prod 
+        required: true
+        type: choice
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            docker rmi ${{inputs.tag}} && docker pull ${{inputs.tag}}
+            docker tag ${{inputs.tag}} ${{inputs.dokku_tag}}
+            dokku tags:deploy mipage-api ${{inputs.stage}}
+    
