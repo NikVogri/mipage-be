@@ -21,12 +21,10 @@ export class PageRepository extends Repository<Page> {
   }
 
   async getPageWithOwnerData(pageId: string): Promise<Page> {
-    return await this.findOne(
-      { id: pageId },
-      {
-        relations: ['owner', 'members', 'notebooks'],
-      },
-    );
+    return await this.findOne({
+      where: { id: pageId },
+      relations: ['owner', 'members', 'notebooks'],
+    });
   }
 
   async addMember(page: Page, user: User): Promise<Page> {

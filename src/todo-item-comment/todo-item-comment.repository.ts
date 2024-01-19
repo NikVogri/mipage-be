@@ -30,7 +30,7 @@ export class TodoItemCommentRepository extends Repository<TodoItemComment> {
   ) {
     return this.find({
       where: {
-        todoItem,
+        id: todoItem.id,
       },
       relations: ['author'],
       take: pageSize,

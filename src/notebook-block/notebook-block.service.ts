@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotebookBlockOrderService } from 'src/notebook-block-order/notebook-block-order.service';
 import { Notebook } from 'src/notebook/notebook.entity';
-import { EntityManager, getConnection } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { CreateNotebookBlockDto } from './dto/create-notebook-block.dto';
 import { UpdateNotebookBlockDto } from './dto/update-notebook-block.dto';
 import { NotebookBlock } from './notebook-block.entity';
@@ -22,7 +22,7 @@ export class NotebookBlockService {
 
   async getSingleNotebookBlock(noteblockId: string) {
     const notebookBlock = await this.notebookBlockRepository.findOne({
-      id: noteblockId,
+      where: { id: noteblockId },
     });
 
     if (!notebookBlock) {
@@ -36,7 +36,7 @@ export class NotebookBlockService {
 
   async getAllNotebookBlocks(notebook: Notebook) {
     return await this.notebookBlockRepository.find({
-      where: { notebook },
+      where: { id: notebook.id },
       order: {
         createdAt: 'ASC',
       },

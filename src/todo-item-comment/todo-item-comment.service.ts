@@ -46,7 +46,7 @@ export class TodoItemCommentService {
   }
 
   async getTotalComments(todoItem: TodoItem): Promise<number> {
-    return await this.todoItemRepository.count({ where: { todoItem } });
+    return await this.todoItemRepository.count({ where: { id: todoItem.id } });
   }
 
   async getTodoItemComments(

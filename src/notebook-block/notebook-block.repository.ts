@@ -7,7 +7,7 @@ import { NotebookBlock } from './notebook-block.entity';
 @EntityRepository(NotebookBlock)
 export class NotebookBlockRepository extends Repository<NotebookBlock> {
   async getAllNotebookBlocks(notebook: Notebook): Promise<NotebookBlock[]> {
-    return await this.find({ where: { notebook } });
+    return await this.find({ where: { id: notebook.id } });
   }
 
   async createNotebookBlock(

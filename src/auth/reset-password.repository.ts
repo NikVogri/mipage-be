@@ -27,7 +27,7 @@ export class ResetPasswordRepository extends Repository<ResetPasswordToken> {
   }
 
   async getToken(token: string): Promise<ResetPasswordToken> {
-    return await this.findOne({ token });
+    return await this.findOne({ where: { token } });
   }
 
   async getTokenByUserId(userId: string): Promise<ResetPasswordToken> {

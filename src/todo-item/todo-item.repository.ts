@@ -22,7 +22,10 @@ export class TodoItemRepository extends Repository<TodoItem> {
   }
 
   async getTodoItem(todoItemId: string): Promise<TodoItem> {
-    return await this.findOne(todoItemId, { relations: ['creator'] });
+    return await this.findOne({
+      where: { id: todoItemId },
+      relations: ['creator'],
+    });
   }
 
   async updateTodoItem(todo: TodoItem, updates: Partial<TodoItem>) {

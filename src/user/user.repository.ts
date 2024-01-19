@@ -29,27 +29,25 @@ export class UserRespository extends Repository<User> {
   }
 
   async getAllUserDataByEmail(email: string): Promise<User | null> {
-    const user = await this.findOne(
-      { email },
-      {
-        select: [
-          'id',
-          'username',
-          'email',
-          'password',
-          'avatar',
-          'bio',
-          'createdAt',
-          'updatedAt',
-        ],
-      },
-    );
+    const user = await this.findOne({
+      where: { email },
+      select: [
+        'id',
+        'username',
+        'email',
+        'password',
+        'avatar',
+        'bio',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
 
     return user;
   }
 
   async getUserById(id: string): Promise<User> {
-    return await this.findOne({ id });
+    return await this.findOne({ where: { id } });
   }
 
   async updatePersonalInfo(

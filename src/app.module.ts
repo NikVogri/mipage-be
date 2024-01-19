@@ -18,9 +18,13 @@ import { TodoItemCommentModule } from './todo-item-comment/todo-item-comment.mod
 import { EmailModule } from './email/email.module';
 import { NotebookBlockOrderModule } from './notebook-block-order/notebook-block-order.module';
 import { AppController } from './app.controller';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
@@ -30,7 +34,7 @@ import { AppController } from './app.controller';
         synchronize: process.env.STAGE !== 'prod',
         logging: process.env.STAGE !== 'prod',
         autoLoadEntities: true,
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       }),
     }),
     UserModule,

@@ -28,7 +28,7 @@ export class TodoRepository extends Repository<Todo> {
   }
 
   async getSingleTodo(todoId: string): Promise<Todo> {
-    const todo = await this.findOne({ id: todoId });
+    const todo = await this.findOne({ where: { id: todoId } });
 
     if (!todo) {
       throw new NotFoundException(`Todo with id ${todoId} not found`);
